@@ -24,6 +24,7 @@ private:
     int multiple = 1;
     QGraphicsItem* elipsa{ nullptr };
     QGraphicsItem* BusStop{ nullptr };
+    QVector<Bus*> busses{nullptr};
     float posX = 504;
     float posY = 217;
     int posEX = 469;
@@ -41,7 +42,7 @@ private slots:
     std::vector <float> CountInc();
 
 public:
-    void initScene( QMap<QString, Street*> streets );
+    void initScene( QMap<QString, Street*> streets, QMap<QString, Bus*> busses );
     Ui::MainWindow *ui;
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();

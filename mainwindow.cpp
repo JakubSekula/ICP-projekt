@@ -1,4 +1,4 @@
-﻿#include "mainwindow.h"
+#include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <QDebug>
 #include <iterator>
@@ -41,7 +41,7 @@ void MainWindow::zoom( int x ){
     ui->graphicsView->setTransform( QTransform( scale, org.m12(), org.m21(), scale, org.dx(), org.dy()));
 }
 
-void MainWindow::initScene( QMap<QString, Street*> streets ){
+void MainWindow::initScene( QMap<QString, Street*> streets, QMap<QString, Bus*> bussesHash ){
 
     QPainter painter(this);
     QPen blue( Qt::blue, 4 );
@@ -65,33 +65,20 @@ void MainWindow::initScene( QMap<QString, Street*> streets ){
 
             test = QRectF( streets[ i.key() ]->GetMiddle()->GetX() - 2.5, streets[ i.key() ]->GetMiddle()->GetY() -2.5, 5, 5 );
 
-            auto* stopBus = scene->addEllipse( test, blue  );
+            auto* Busstop= scene->addEllipse( test, blue  );
 
         }
 
     }
 
-    testik = new class Bus();
-
-    testik->getStreets( streets );
-
-    testik->setRout( "Pearl1" );
-    testik->setRout( "Pearl2" );
-
-    QVector<Street*> streetT = testik->getRoute();
-
-    for ( int iter = 0; iter != streetT.size(); iter++ ){
-        qDebug() << streetT[ iter ]->GetStreetName();
+    QMap<QString, Bus*>::iterator b;
+    for( b = bussesHash.begin(); b != bussesHash.end(); b++ ){
+        auto* test = bussesHash[ b.key() ]->getBus();
+        test = scene->addEllipse( 0, 0, 5, 5, red );
+        test->setPos( bussesHash[ b.key() ]->GetPossition() );
+        bussesHash[ b.key() ]->setBus( test );
+        this->busses.push_back( bussesHash[ b.key() ] );
     }
-
-    nesttt = testik->getBus();
-
-    nesttt = scene->addEllipse( 0, 0, 5, 5, red );
-    nesttt->setPos( testik->SetPossition() );
-
-    busT = scene->addEllipse( 0, 0, 5, 5, red );
-    busT->setPos( posX-2.5, posY-2.5 );
-
     ui->graphicsView->setRenderHint( QPainter::Antialiasing );
 }
 
@@ -110,15 +97,13 @@ void MainWindow::speed( int x ){
 
 void MainWindow::BusMovement(){
 
-
-
-    std::vector<float>pos = CountInc();
-    //qDebug() << pos[ 0 ];
-    //qDebug() << pos[ 1 ];
-    posX = posX + pos[ 0 ];
-    posY = posY + pos[ 1 ];
-    busT->setPos( posX-2.5, posY-2.5 );
-
+    for( int i = 0; i < busses.size(); i++ ){
+        if( i != 0 ){
+            auto* bus = busses[ i ]->getBus();
+            bus->setPos( busses[ i ]->getPos() );
+            busses[ i ]->setBus( bus );
+        }
+    }
 }
 
 std::vector <float> MainWindow::CountInc(){

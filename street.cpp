@@ -82,8 +82,12 @@ coordinate* Street::GetMiddle(){
 }
 
 bool Street::equals(Street *street){
-    if( this->GetStreetEnd().GetX() == street->GetStreetStart().GetX() && this->GetStreetEnd().GetY() == street->GetStreetStart().GetY() ){
+    if( ( this->GetStreetEnd().GetX() == street->GetStreetStart().GetX() && this->GetStreetEnd().GetY() == street->GetStreetStart().GetY() ) ||
+        ( this->GetStreetEnd().GetX() == street->GetStreetEnd().GetX() && this->GetStreetEnd().GetY() == street->GetStreetEnd().GetY() )){
         return true;
+    } else if( ( this->GetStreetStart().GetX() == street->GetStreetEnd().GetX() && this->GetStreetStart().GetY() == street->GetStreetEnd().GetY() ) ||
+               ( this->GetStreetStart().GetX() == street->GetStreetStart().GetX() && this->GetStreetStart().GetY() == street->GetStreetStart().GetY() ) ) {
+
     } else {
         return false;
     }

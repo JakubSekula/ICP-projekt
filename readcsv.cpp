@@ -1,19 +1,23 @@
 ﻿#include "readcsv.h"
 
-readcsv::readcsv( QString filecsv, QString FileType ){
+readcsv::readcsv( QString filecsv, QString FileType, QMap<QString, Street*> hashStreet ){
 
         if( FileType == "Map" ){
             LoadMap( filecsv );
         } else if ( FileType == "Bus" ){
-            LoadMap( filecsv );
+            LoadBus( filecsv, hashStreet );
         } else {
             exit( 32 );
         }
 
 }
 
-QMap<QString,Street*> readcsv::GetHash(){
+QMap<QString,Street*> readcsv::GetMapHash(){
     return this->hash;
+}
+
+QMap<QString,Bus*> readcsv::GetBusHash(){
+    return this->busHash;
 }
 
 void readcsv::LoadMap( QString filecsv ){
@@ -48,7 +52,8 @@ void readcsv::LoadMap( QString filecsv ){
 
 }
 
-void readcsv::LoadBus( QString filecsv ){
+void readcsv::LoadBus( QString filecsv, QMap<QString, Street*> hashStreet ){
+
     QFile file( filecsv );
         if ( !file.open( QIODevice::ReadOnly | QIODevice::Text ) )
             return;
@@ -56,4 +61,24 @@ void readcsv::LoadBus( QString filecsv ){
     QTextStream in( &file );
 
     QString line = in.readLine();
+
+    while ( !line.isNull() ) {
+        line = in.readLine();
+        QStringList row = line.split(',');
+        if( row[ 0 ] == "" ){
+            break;
+        }
+
+        bus = new Bus();
+        bus->getStreets( hashStreet );
+        bus->NameIt( row[ 1 ] );
+
+        for( int i = 0; i < row.size(); i++ ){
+            if( i >= 2 ){
+                bus->setRout( row[ i ] );
+            }
+        }
+
+        busHash.insert( row[ 0 ], bus );
+    }
 }
