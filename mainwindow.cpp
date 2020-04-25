@@ -44,7 +44,7 @@ void MainWindow::zoom( int x ){
 void MainWindow::initScene( QMap<QString, Street*> streets ){
 
     QPainter painter(this);
-    QPen yellow( Qt::blue, 4 );
+    QPen blue( Qt::blue, 4 );
     QPen red( Qt::red, 2 );
 
     auto *scene = new QGraphicsScene( ui->graphicsView );
@@ -62,28 +62,41 @@ void MainWindow::initScene( QMap<QString, Street*> streets ){
         stop* s1 = streets[ i.key() ]->getStop();
 
         if( s1 != NULL ){
-            qDebug() << streets[ i.key() ]->GetMiddle()->GetX();
-            qDebug() << streets[ i.key() ]->GetMiddle()->GetY();
 
             test = QRectF( streets[ i.key() ]->GetMiddle()->GetX() - 2.5, streets[ i.key() ]->GetMiddle()->GetY() -2.5, 5, 5 );
 
-            auto* stopBus = scene->addEllipse( test, yellow  );
+            auto* stopBus = scene->addEllipse( test, blue  );
 
         }
 
     }
 
-    Bus = scene->addEllipse( 0, 0, 5, 5, red );
-    Bus->setPos( posX, posY );
+    testik = new class Bus();
+
+    testik->getStreets( streets );
+
+    testik->setRout( "Pearl1" );
+    testik->setRout( "Pearl2" );
+
+    QVector<Street*> streetT = testik->getRoute();
+
+    for ( int iter = 0; iter != streetT.size(); iter++ ){
+        qDebug() << streetT[ iter ]->GetStreetName();
+    }
+
+    nesttt = testik->getBus();
+
+    nesttt = scene->addEllipse( 0, 0, 5, 5, red );
+    nesttt->setPos( testik->SetPossition() );
+
+    busT = scene->addEllipse( 0, 0, 5, 5, red );
+    busT->setPos( posX-2.5, posY-2.5 );
 
     ui->graphicsView->setRenderHint( QPainter::Antialiasing );
 }
 
 void MainWindow::get_time(){
-    posX++;
-    posY++;
-
-    Bus->setPos( posX, posY );
+    BusMovement();
     QTime time = QTime::fromString(ui->Timer->text(),"hh : mm : ss");
     time = time.addSecs(1);
     QString time_str = time.toString("hh : mm : ss");
@@ -93,4 +106,41 @@ void MainWindow::get_time(){
 void MainWindow::speed( int x ){
     timer->stop();
     timer->start( 1000/x );
+}
+
+void MainWindow::BusMovement(){
+
+
+
+    std::vector<float>pos = CountInc();
+    //qDebug() << pos[ 0 ];
+    //qDebug() << pos[ 1 ];
+    posX = posX + pos[ 0 ];
+    posY = posY + pos[ 1 ];
+    busT->setPos( posX-2.5, posY-2.5 );
+
+}
+
+std::vector <float> MainWindow::CountInc(){
+    float Xdiffer = abs( 504 - posEX );
+    float Ydiffer = abs( 217 - posEY );
+
+    std::vector<float> result;
+
+    if( Xdiffer > Ydiffer ){
+        if( posEX < posX ){
+            result.push_back( -1 );
+        } else {
+            result.push_back( 1 );
+        }
+        float Odifference = ( Xdiffer/Ydiffer );
+        result.push_back( 1/Odifference );
+        return( result );
+    } else {
+        float Odifference = ( Xdiffer/Ydiffer );
+        result.push_back( 1/Odifference );
+        result.push_back( 1 );
+        return( result );
+    }
+
 }

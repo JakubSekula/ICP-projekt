@@ -39,6 +39,8 @@ public:
 
     coordinate* GetMiddle();
 
+    bool equals( Street* street );
+
 };
 
 

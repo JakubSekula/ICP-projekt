@@ -14,13 +14,10 @@
 int main(int argc, char *argv[])
 {
     // konstruktor nacte csv do mapy
-    readcsv csv( "newyork.csv" );
+    readcsv csv( "newyork.csv", "Map" );
 
     // ziskam map nacteny z csv souboru
     QMap<QString, Street*> streets = csv.GetHash();
-
-    // ziskam 2d vector souradnic
-    QVector<QVector<int>> coordsvector = csv.GetArrayOfCords( streets );
 
     QApplication a(argc, argv);
     MainWindow w;

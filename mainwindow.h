@@ -8,6 +8,8 @@
 #include <QGraphicsItem>
 #include <QPainter>
 #include "street.h"
+#include "bus.h"
+#include <vector>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -22,15 +24,21 @@ private:
     int multiple = 1;
     QGraphicsItem* elipsa{ nullptr };
     QGraphicsItem* BusStop{ nullptr };
-    float posX = 239;
-    float posY = 342;
+    float posX = 504;
+    float posY = 217;
+    int posEX = 469;
+    int posEY = 245;
     QRectF test;
-    QGraphicsEllipseItem * Bus;
+    Bus* testik;
+    QGraphicsEllipseItem* busT;
+    QGraphicsEllipseItem* nesttt;
 
 private slots:
     void zoom( int x );
     void get_time();
     void speed( int x );
+    void BusMovement();
+    std::vector <float> CountInc();
 
 public:
     void initScene( QMap<QString, Street*> streets );

@@ -80,3 +80,11 @@ void Street::CountMiddle( coordinate c1, coordinate c2 ){
 coordinate* Street::GetMiddle(){
     return this->middle;
 }
+
+bool Street::equals(Street *street){
+    if( this->GetStreetEnd().GetX() == street->GetStreetStart().GetX() && this->GetStreetEnd().GetY() == street->GetStreetStart().GetY() ){
+        return true;
+    } else {
+        return false;
+    }
+}

@@ -17,9 +17,11 @@
 class readcsv
 {
 public:
-    readcsv( QString filecsv  );
+    readcsv( QString filecsv, QString FileType  );
     QVector<QVector<int>> GetArrayOfCords( QMap<QString,Street*> makearray );
     QMap<QString,Street*> GetHash();
+    void LoadMap( QString filecsv );
+    void LoadBus( QString filecsv );
 
 private:
     coordinate* c1;
