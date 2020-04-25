@@ -15,9 +15,17 @@ readcsv::readcsv( QString filecsv  ){
             if( row[ 0 ] == "" ){
                 break;
             }
+
             c1 = new coordinate ( row[ 2 ].toInt(), row[ 3 ].toInt() );
             c2 = new coordinate ( row[ 4 ].toInt(), row[ 5 ].toInt() );
+
             street = new Street( row[ 0 ], row[ 1 ], *c1, *c2 );
+
+            if( row[ 6 ] == "YES" ){
+                s1 = new stop( row[ 0 ], row[ 1 ] );
+                street->AddStop( s1 );
+            }
+
             hash.insert( row[ 0 ], street );
         }
 

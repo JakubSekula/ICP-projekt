@@ -7,38 +7,38 @@
 #include <vector>
 #include <QString>
 #include "coordinate.h"
+#include "stop.h"
 
 using namespace::std;
 
 class Street{
 
+private:
     QString name;
     QString id;
     vector<coordinate> coordinates;
+    stop* s1 = NULL;
+    coordinate* middle = NULL;
 
-    public:
-        Street( QString id, QString name, coordinate c1, coordinate c2 ){
-            this->name = name;
-            this->id = id;
-            coordinates.push_back( c1 );
-            coordinates.push_back( c2 );
-        }
+public:
+    Street( QString id, QString name, coordinate c1, coordinate c2 );
 
-        QString GetStreetID(){
-            return name;
-        }
+    QString GetStreetID();
 
-        QString GetStreetName(){
-            return name;
-        }
+    QString GetStreetName();
 
-        coordinate GetStreetStart(){
-            return( coordinates.front() );
-        }
+    coordinate GetStreetStart();
 
-        coordinate GetStreetEnd(){
-            return( coordinates.back() );
-        }
+    coordinate GetStreetEnd();
+
+    void AddStop( stop* stop );
+
+    stop* getStop();
+
+    void CountMiddle( coordinate c1, coordinate c2 );
+
+    coordinate* GetMiddle();
+
 };
 
 

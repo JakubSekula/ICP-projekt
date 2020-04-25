@@ -20,12 +20,14 @@ SOURCES += \
     main.cpp \
     mainwindow.cpp \
     readcsv.cpp \
+    stop.cpp \
     street.cpp
 
 HEADERS += \
     coordinate.h \
     mainwindow.h \
     readcsv.h \
+    stop.h \
     street.h
 
 FORMS += \

@@ -1,4 +1,4 @@
-#include "mainwindow.h"
+﻿#include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <QDebug>
 #include <iterator>
@@ -6,8 +6,10 @@
 #include <QString>
 #include <QMouseEvent>
 #include <QPushButton>
-#include <QGraphicsItem>
 #include <QGridLayout>
+#include <QDateTime>
+#include <QVariantAnimation>
+
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -16,6 +18,14 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
 
     connect( ui->verticalSlider, &QSlider::valueChanged, this, &MainWindow::zoom );
+    connect( ui->speeder, SIGNAL( valueChanged( int ) ), this, SLOT( speed( int ) ) );
+
+    timer = new QTimer(this);
+    QTime time = QTime::currentTime();
+    QString time_str = time.toString("hh : mm : ss");
+    ui->Timer->setText(time_str);
+    timer->start(1000);
+    connect( timer, SIGNAL( timeout() ), this, SLOT( get_time() ) );
 
 }
 
@@ -31,21 +41,56 @@ void MainWindow::zoom( int x ){
     ui->graphicsView->setTransform( QTransform( scale, org.m12(), org.m21(), scale, org.dx(), org.dy()));
 }
 
-void MainWindow::initScene( QVector<QVector<int>> lines, int iter ){
-    auto *scene = new QGraphicsScene( ui->graphicsView );
+void MainWindow::initScene( QMap<QString, Street*> streets ){
 
+    QPainter painter(this);
+    QPen yellow( Qt::blue, 4 );
+    QPen red( Qt::red, 2 );
+
+    auto *scene = new QGraphicsScene( ui->graphicsView );
     ui->graphicsView->setScene( scene );
 
     ui->graphicsView->scale( 1.5,1.5 );
 
-    int i = 0;
+    QMap<QString, Street*>::iterator i;
+    for ( i = streets.begin(); i != streets.end(); ++i ){
 
-    while( i < iter ){
-        auto *line = scene->addLine( lines[i][0], lines[i][1], lines[i][2], lines[i][3] );
+        auto *line = scene->addLine( streets[ i.key() ]->GetStreetStart().GetX(), streets[ i.key() ]->GetStreetStart().GetY(), streets[ i.key() ]->GetStreetEnd().GetX(), streets[ i.key() ]->GetStreetEnd().GetY() );
 
         line->setFlag( QGraphicsItem::ItemIsSelectable );
 
-        i += 1;
+        stop* s1 = streets[ i.key() ]->getStop();
+
+        if( s1 != NULL ){
+            qDebug() << streets[ i.key() ]->GetMiddle()->GetX();
+            qDebug() << streets[ i.key() ]->GetMiddle()->GetY();
+
+            test = QRectF( streets[ i.key() ]->GetMiddle()->GetX() - 2.5, streets[ i.key() ]->GetMiddle()->GetY() -2.5, 5, 5 );
+
+            auto* stopBus = scene->addEllipse( test, yellow  );
+
+        }
+
     }
+
+    Bus = scene->addEllipse( 0, 0, 5, 5, red );
+    Bus->setPos( posX, posY );
+
     ui->graphicsView->setRenderHint( QPainter::Antialiasing );
+}
+
+void MainWindow::get_time(){
+    posX++;
+    posY++;
+
+    Bus->setPos( posX, posY );
+    QTime time = QTime::fromString(ui->Timer->text(),"hh : mm : ss");
+    time = time.addSecs(1);
+    QString time_str = time.toString("hh : mm : ss");
+    ui->Timer->setText(time_str);
+}
+
+void MainWindow::speed( int x ){
+    timer->stop();
+    timer->start( 1000/x );
 }
