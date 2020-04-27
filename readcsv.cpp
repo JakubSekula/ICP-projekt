@@ -43,7 +43,8 @@ void readcsv::LoadMap( QString filecsv ){
         street = new Street( row[ 0 ], row[ 1 ], *c1, *c2 );
 
         if( row[ 6 ] == "YES" ){
-            s1 = new stop( row[ 0 ], row[ 1 ] );
+            s1 = new stop();
+            s1->initialize( row[ 0 ], row[ 1 ] );
             street->AddStop( s1 );
         }
 

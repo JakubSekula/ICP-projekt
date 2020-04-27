@@ -10,6 +10,13 @@
 #include "street.h"
 #include "bus.h"
 #include <vector>
+#include <QTransform>
+#include "ui_mainwindow.h"
+#include <QDebug>
+#include <iterator>
+#include <QWidget>
+#include <QString>
+#include <QDateTime>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -29,10 +36,8 @@ private:
     float posY = 217;
     int posEX = 469;
     int posEY = 245;
-    QRectF test;
-    Bus* testik;
-    QGraphicsEllipseItem* busT;
-    QGraphicsEllipseItem* nesttt;
+    QRectF bStop;
+    friend class Bus;
 
 private slots:
     void zoom( int x );
@@ -46,5 +51,6 @@ public:
     Ui::MainWindow *ui;
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+    void test();
 };
 #endif // MAINWINDOW_H

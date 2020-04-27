@@ -3,12 +3,17 @@
 
 #include <QDebug>
 #include <QMap>
+#include <QObject>
 #include <QGraphicsEllipseItem>
 #include "street.h"
 #include <cmath>
+#include <QMouseEvent>
+#include <QGraphicsSceneMouseEvent>
+#include <QGraphicsItem>
+#include <QPainter>
+#include "dialog.h"
 
-
-class Bus
+class Bus : public QGraphicsItem
 {
 
 private:
@@ -17,6 +22,7 @@ private:
     QMap<QString, Street*> streets;
     QVector<Street*> route;
     QString name;
+    QString id;
     float posX;
     float posY;
     float xStep;
@@ -24,6 +30,8 @@ private:
     bool switcher = false;
 
 public:
+    QRectF boundingRect() const override;
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = Q_NULLPTR) override;
     QGraphicsEllipseItem* bus{nullptr};
     Bus();
     void getStreets( QMap<QString, Street*> str );
@@ -31,11 +39,19 @@ public:
     QVector<Street *> getRoute();
     void setRout( QString streetId );
     void NameIt( QString streetName );
+    void IdIt( QString ID );
     QPointF GetPossition();
-    void setBus( QGraphicsEllipseItem *bus );
+    void setBus();
     QPointF getPos();
     void nextPos();
+    QString getId();
+    QString getName();
 
+protected:
+    void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
+
+signals:
+    void valueChanged(int newValue);
 };
 
 #endif // BUS_H

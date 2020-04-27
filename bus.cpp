@@ -1,5 +1,19 @@
 #include "bus.h"
 
+QRectF Bus::boundingRect() const
+{
+    return QRectF( 0, 0, 5, 5 );
+}
+
+void Bus::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+{
+    QRectF rec = boundingRect();
+    QBrush brush( Qt::red );
+    QPen pen( brush, 3 );
+    painter->setPen( pen );
+    painter->drawEllipse( rec );
+}
+
 Bus::Bus(){
     getBus();
 }
@@ -36,6 +50,10 @@ void Bus::NameIt( QString streetName ){
     this->name = streetName;
 }
 
+void Bus::IdIt( QString ID ){
+    this->id = ID;
+}
+
 QPointF Bus::GetPossition(){
     QPointF start;
     start.rx() =  route[ 0 ]->GetStreetStart().GetX() -2.5 ;
@@ -43,8 +61,7 @@ QPointF Bus::GetPossition(){
     return start;
 }
 
-void Bus::setBus( QGraphicsEllipseItem *bus ){
-    this->bus = bus;
+void Bus::setBus(){
     nextPos();
 }
 
@@ -160,4 +177,18 @@ void Bus::nextPos(){
         this->posX = this->posX - this->xStep;
         this->posY = this->posY - this->yStep;
     }
+}
+
+QString Bus::getId(){
+    return this->id;
+}
+
+QString Bus::getName(){
+    return this->name;
+}
+
+void Bus::mousePressEvent(QGraphicsSceneMouseEvent *event)
+{
+    qDebug() << "Bus";
+    //emit valueChanged(1);
 }

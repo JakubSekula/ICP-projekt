@@ -39,6 +39,7 @@ stop* Street::getStop(){
         return NULL;
     } else {
         CountMiddle( GetStreetStart(), GetStreetEnd() );
+        //auto* newStop = new stop();
         return s1;
     }
 }
