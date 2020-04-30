@@ -63,6 +63,7 @@ QPointF Bus::GetPossition(){
 
 void Bus::setBus(){
     nextPos();
+    this->onmap = true;
 }
 
 QPointF Bus::getPos(){
@@ -88,6 +89,10 @@ void Bus::nextPos(){
                     } else {
                         switcher = false;
                     }
+                }
+
+                if( this->currenti == route.size() - 1 ){
+                    this->currenti = 0;
                 }
                 this->current = route[ currenti ];
                 this->currenti++;
@@ -118,6 +123,11 @@ void Bus::nextPos(){
                         switcher = true;
                     }
                 }
+
+                if( this->currenti == route.size() - 1 ){
+                    this->currenti = 0;
+                }
+
                 this->current = route[ currenti ];
                 this->currenti++;
                 if( switcher == false ){
@@ -143,9 +153,6 @@ void Bus::nextPos(){
         ratio = Ydiffer/Xdiffer;
     }
 
-    //qDebug() << Xdiffer;
-    //qDebug() << Ydiffer;
-
     if( Xdiffer > Ydiffer ){
         if( current->GetStreetStart().GetX() <= current->GetStreetEnd().GetX() ){
             this->xStep = 1;
@@ -170,6 +177,7 @@ void Bus::nextPos(){
             this->xStep = -1/ratio;
         }
     }
+
     if( switcher == false ){
         this->posX = this->posX + this->xStep;
         this->posY = this->posY + this->yStep;
@@ -187,8 +195,24 @@ QString Bus::getName(){
     return this->name;
 }
 
-void Bus::mousePressEvent(QGraphicsSceneMouseEvent *event)
+QPointF Bus::getMiddle(){
+    QPointF ret;
+    ret.rx() = current->GetMiddle()->GetX() - 2.5;
+    ret.ry() = current->GetMiddle()->GetY() - 2.5;
+    this->posX = ret.rx() + 2.5;
+    this->posY = ret.ry() + 2.5;
+    return ret;
+}
+
+void Bus::setStart( QString time ){
+    this->start = time;
+}
+
+QString Bus::getStart(){
+    return this->start;
+}
+
+void Bus::mousePressEvent( QGraphicsSceneMouseEvent *event )
 {
     qDebug() << "Bus";
-    //emit valueChanged(1);
 }

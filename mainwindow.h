@@ -8,6 +8,7 @@
 #include <QGraphicsItem>
 #include <QPainter>
 #include "street.h"
+#include "line.h"
 #include "bus.h"
 #include <vector>
 #include <QTransform>
@@ -17,6 +18,7 @@
 #include <QWidget>
 #include <QString>
 #include <QDateTime>
+#include <QVectorIterator>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -37,7 +39,13 @@ private:
     int posEX = 469;
     int posEY = 245;
     QRectF bStop;
+    QMap<int, line*> lines;
     friend class Bus;
+    QMap<QString, QMap<QString, Bus*>> bussesHash;
+    QMap<QString, line*> linkHash;
+    QGraphicsScene* scene;
+    QTime lastTime;
+    int jump;
 
 private slots:
     void zoom( int x );
@@ -47,7 +55,8 @@ private slots:
     std::vector <float> CountInc();
 
 public:
-    void initScene( QMap<QString, Street*> streets, QMap<QString, Bus*> busses );
+    void initScene( QMap<QString, Street*> streets, QMap<QString, QMap<QString, Bus*>> busses, QMap<QString, line*> lines );
+    void spawnBus();
     Ui::MainWindow *ui;
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();

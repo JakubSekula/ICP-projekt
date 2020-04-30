@@ -19,6 +19,7 @@ SOURCES += \
     bus.cpp \
     coordinate.cpp \
     dialog.cpp \
+    line.cpp \
     main.cpp \
     mainwindow.cpp \
     readcsv.cpp \
@@ -29,6 +30,7 @@ HEADERS += \
     bus.h \
     coordinate.h \
     dialog.h \
+    line.h \
     mainwindow.h \
     readcsv.h \
     stop.h \

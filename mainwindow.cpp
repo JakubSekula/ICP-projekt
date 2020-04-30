@@ -11,9 +11,10 @@ MainWindow::MainWindow(QWidget *parent)
 
     timer = new QTimer( this );
     QTime time = QTime::fromString( "12:00:00" );
-    QString time_str = time.toString( "hh : mm : ss" );
-    ui->lineEdit->setText( time_str );
+    ui->lineEdit->setDisplayFormat( "hh : mm : ss" );
+    ui->lineEdit->setTime( time );
     timer->start( 1000 );
+    lastTime = time;
     connect( timer, SIGNAL( timeout() ), this, SLOT( get_time() ) );
 
 }
@@ -30,13 +31,18 @@ void MainWindow::zoom( int x ){
     ui->graphicsView->setTransform( QTransform( scale, org.m12(), org.m21(), scale, org.dx(), org.dy()));
 }
 
-void MainWindow::initScene( QMap<QString, Street*> streets, QMap<QString, Bus*> bussesHash ){
+void MainWindow::initScene( QMap<QString, Street*> streets, QMap<QString, QMap<QString, Bus*>> bussesHash, QMap<QString, line*> linkHash ){
 
     QPainter painter(this);
     QPen blue( Qt::blue, 4 );
     QPen red( Qt::red, 2 );
 
-    auto *scene = new QGraphicsScene( ui->graphicsView );
+    this->bussesHash = bussesHash;
+    this->linkHash = linkHash;
+
+    QGraphicsScene* scene = new QGraphicsScene( ui->graphicsView );
+
+    this->scene = scene;
 
     ui->graphicsView->setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
 
@@ -65,27 +71,39 @@ void MainWindow::initScene( QMap<QString, Street*> streets, QMap<QString, Bus*> 
 
     }
 
-
-    QMap<QString, Bus*>::iterator b;
-    for( b = bussesHash.begin(); b != bussesHash.end(); b++ ){
-        auto* test = bussesHash[ b.key() ];
-        scene->addItem( test );
-        test->setPos( test->GetPossition() );
-        test->setBus();
-        this->busses.push_back( test );
-    }
     ui->graphicsView->setRenderHint( painter.Antialiasing );
 
+}
+
+void MainWindow::spawnBus(){
+
+    QMap<QString, QMap<QString,Bus*>>::iterator test;
+    for( test = bussesHash.begin(); test != bussesHash.end(); test++ ){
+        for( auto* bus : *test ){
+            QString sysTime = ui->lineEdit->text().right( 7 ).split( ' ', QString::SkipEmptyParts ).join( "" );
+            QString myTime = bus->getStart().split( ' ', QString::SkipEmptyParts ).join( "" );
+            //qDebug() << sysTime;
+            //qDebug() << myTime;
+            if( ( myTime == sysTime ) && ( bus->onmap == false ) ){
+                scene->addItem( bus );
+                bus->setPos( bus->getMiddle() );
+                bus->setBus();
+                this->busses.push_back( bus );
+            }
+        }
+    }
 }
 
 
 
 void MainWindow::get_time(){
+    QTime time = QTime::fromString( ui->lineEdit->text(), "hh : mm : ss" );
+    spawnBus();
+    jump = ( time.msecsTo(lastTime) / 1000 ) * -1;
+    lastTime = time;
     BusMovement();
-    QTime time = QTime::fromString( ui->lineEdit->text(),"hh : mm : ss" );
-    time = time.addSecs(1);
-    QString time_str = time.toString( "hh : mm : ss" );
-    ui->lineEdit->setText( time_str );
+    time = time.addSecs( 1 );
+    ui->lineEdit->setTime( time );
 }
 
 void MainWindow::speed( int x ){
@@ -94,13 +112,17 @@ void MainWindow::speed( int x ){
 }
 
 void MainWindow::BusMovement(){
-
-    for( int i = 0; i < busses.size(); i++ ){
-        if( i != 0 ){
-            auto* bus = busses[ i ];
-            bus->setPos( busses[ i ]->getPos() );
-            busses[ i ]->setBus();
+    int o = 0;
+    //qDebug() << jump;
+    while( o < jump ){
+        for( int i = 0; i < busses.size(); i++ ){
+            if( i != 0 ){
+                auto* bus = busses[ i ];
+                bus->setPos( busses[ i ]->getPos() );
+                busses[ i ]->setBus();
+            }
         }
+        o++;
     }
 }
 

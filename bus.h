@@ -46,6 +46,11 @@ public:
     void nextPos();
     QString getId();
     QString getName();
+    QPointF getMiddle();
+    void setStart( QString time );
+    QString getStart();
+    QString start;
+    bool onmap = false;
 
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event) override;

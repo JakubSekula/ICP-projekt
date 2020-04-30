@@ -15,7 +15,7 @@ Street::Street( QString id, QString name, coordinate c1, coordinate c2 ){
 }
 
 QString Street::GetStreetID(){
-    return name;
+    return id;
 }
 
 QString Street::GetStreetName(){
