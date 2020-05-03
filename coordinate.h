@@ -5,12 +5,12 @@
 class coordinate
 {
 public:
-    coordinate( int x, int y );
-    int GetX();
-    int GetY();
+    coordinate( float x, float y );
+    float GetX();
+    float GetY();
 
 private:
-    int x, y;
+    float x, y;
 };
 
 #endif // COORDINATE_H

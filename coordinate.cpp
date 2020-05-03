@@ -1,14 +1,14 @@
 #include "coordinate.h"
 
-coordinate::coordinate( int x, int y ){
+coordinate::coordinate( float x, float y ){
     this->x = x;
     this->y = y;
 }
 
-int coordinate::GetX(){
+float coordinate::GetX(){
     return this->x;
 }
 
-int coordinate::GetY(){
+float coordinate::GetY(){
     return this->y;
 }

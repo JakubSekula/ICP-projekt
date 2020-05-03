@@ -1,7 +1,6 @@
 #include "bus.h"
 
-QRectF Bus::boundingRect() const
-{
+QRectF Bus::boundingRect() const{
     return QRectF( 0, 0, 5, 5 );
 }
 
@@ -73,118 +72,131 @@ QPointF Bus::getPos(){
     return x;
 }
 
+void Bus::countAdditions( float sx, float sy, float ex, float ey ){
+
+    bool newStreet = false;
+
+    float stepX = 0;
+    float stepY = 0;
+
+    float XDiff = abs( ex - sx );
+    float YDiff = abs( ey - sy );
+    hypotenuse = sqrt( pow( XDiff, 2 ) + pow( YDiff, 2 ) );
+
+    if( stationary ){
+        streetLength = 0;
+        stationary = false;
+    }
+
+    if( halflength ){
+        hypotenuse = hypotenuse / 2;
+        XDiff = XDiff / 2;
+        YDiff = YDiff / 2;
+    }
+
+    //qDebug() << streetLength + step << hypotenuse;
+    if( streetLength + step >= hypotenuse ){
+        step = hypotenuse - streetLength;
+        rest = step;
+        newStreet = true;
+    }
+
+    //qDebug() << streetLength << hypotenuse;
+
+    if( useRest ){
+        stepX = XDiff / ( hypotenuse / ( step + rest ) );
+        stepY = YDiff / ( hypotenuse / ( step + rest ) );
+        streetLength = streetLength + step + rest;
+        useRest = false;
+    } else {
+        stepX = XDiff / ( hypotenuse / ( step ) );
+        stepY = YDiff / ( hypotenuse / ( step ) );
+        streetLength = streetLength + step;
+    }
+
+   if( ( ( streetLength > hypotenuse / 2 ) && ( ( streetLength - hypotenuse ) <= 0.5 ) ) && ( current->getStop() ) && currenti != 1 && stopAtStop ){
+        this->posX = current->GetMiddle()->GetX();
+        this->posY = current->GetMiddle()->GetY();
+        changeStop = true;
+        stopAtStop = false;
+        stationary = true;
+        halflength = true;
+    } else if ( sx <= ex ){
+        if( sy <= ey ){
+            this->posX = this->posX + stepX;
+            this->posY = this->posY + stepY;
+        } else {
+            this->posX = this->posX + stepX;
+            this->posY = this->posY - stepY;
+        }
+    } else {
+        if( sy < ey ){
+            this->posX = this->posX - stepX;
+            this->posY = this->posY + stepY;
+        } else {
+            this->posX = this->posX - stepX;
+            this->posY = this->posY - stepY;
+        }
+    }
+
+    if( newStreet && route.size() != currenti + 1 ){
+        current = route[ currenti ];
+        currenti++;
+        stopAtStop = true;
+        useRest = true;
+        halflength = false;
+        streetLength = 0;
+    }
+}
+
+float Bus::countDistanceToStop(){
+    float length = 0;
+    for( int i = currenti - 1; i < route.size(); i++ ){
+        length = length + countStreetLenght( route[ i ] );
+        if( route[ i ]->getStop() ){
+            if( route[ i ]->getStop()->getID() == plannedStops[ now + 1 ][ 0 ] ){
+                break;
+            }
+        }
+    }
+    return length;
+}
+
 void Bus::nextPos(){
-    if( switcher == false ){
-        if( round( this->posX ) == current->GetStreetEnd().GetX() && round( this->posY ) == current->GetStreetEnd().GetY() ){
-            if( this->route.size() > this->currenti ){
-                if( switcher == false ){
-                    if( !( current->GetStreetEnd().GetX() == route[ currenti ]->GetStreetStart().GetX() ) ){
-                        switcher = true;
-                    } else {
-                        switcher = false;
-                    }
-                } else {
-                    if( !( current->GetStreetStart().GetX() == route[ currenti ]->GetStreetEnd().GetX() ) ){
-                        switcher = true;
-                    } else {
-                        switcher = false;
-                    }
-                }
 
-                if( this->currenti == route.size() - 1 ){
-                    this->currenti = 0;
-                }
-                this->current = route[ currenti ];
-                this->currenti++;
-                if( switcher == false ){
-                    this->posX = current->GetStreetStart().GetX();
-                    this->posY = current->GetStreetStart().GetY();
-                } else {
-                    this->posX = current->GetStreetEnd().GetX();
-                    this->posY = current->GetStreetEnd().GetY();
-                }
-            } else {
-                return;
-            }
-        }
+    if( changeStop ){
+        now++;
+    }
+
+    if( currenti == 1 || changeStop ){
+        length = countDistanceToStop();
+        changeStop = false;
+    }
+
+    //qDebug() << length;
+
+    step = length / ( int ) length;
+
+    step = ( length * step ) / 30;
+
+    if( currenti == 1 ){
+        countAdditions( current->GetMiddle()->GetX(), current->GetMiddle()->GetY(), current->GetStreetEnd().GetX(), current->GetStreetEnd().GetY() );
     } else {
-        if( round( this->posX ) == current->GetStreetStart().GetX() && round( this->posY ) == current->GetStreetStart().GetY() ){
-            if( this->route.size() > this->currenti ){
-                if( switcher == false ){
-                    if( !( current->GetStreetEnd().GetX() == route[ currenti ]->GetStreetStart().GetX() ) ){
-                        switcher = true;
-                    } else {
-                        switcher = false;
-                    }
-                } else {
-                    if( !( current->GetStreetStart().GetX() == route[ currenti ]->GetStreetEnd().GetX() ) ){
-                        switcher = false;
-                    } else {
-                        switcher = true;
-                    }
-                }
-
-                if( this->currenti == route.size() - 1 ){
-                    this->currenti = 0;
-                }
-
-                this->current = route[ currenti ];
-                this->currenti++;
-                if( switcher == false ){
-                    this->posX = current->GetStreetStart().GetX();
-                    this->posY = current->GetStreetStart().GetY();
-                } else {
-                    this->posX = current->GetStreetEnd().GetX();
-                    this->posY = current->GetStreetEnd().GetY();
-                }
-            } else {
-                return;
-            }
+        if( current->GetStreetEnd().GetX() == route[ currenti - 2 ]->GetStreetEnd().GetX() && current->GetStreetEnd().GetY() == route[ currenti - 2 ]->GetStreetEnd().GetY() ){
+            countAdditions( current->GetStreetEnd().GetX(), current->GetStreetEnd().GetY(), current->GetStreetStart().GetX(), current->GetStreetStart().GetY() );
+        } else if ( current->GetStreetEnd().GetX() == route[ currenti - 2 ]->GetStreetStart().GetX() && current->GetStreetEnd().GetY() == route[ currenti - 2 ]->GetStreetStart().GetY() ){
+            countAdditions( current->GetStreetEnd().GetX(), current->GetStreetEnd().GetY(), current->GetStreetStart().GetX(), current->GetStreetStart().GetY() );
+        } else {
+            countAdditions( current->GetStreetStart().GetX(), current->GetStreetStart().GetY(), current->GetStreetEnd().GetX(), current->GetStreetEnd().GetY() );
         }
     }
 
-    float Xdiffer = abs( current->GetStreetStart().GetX() - current->GetStreetEnd().GetX() );
-    float Ydiffer = abs( current->GetStreetStart().GetY() - current->GetStreetEnd().GetY() );
-    float ratio;
-
-    if( Xdiffer >= Ydiffer ){
-        ratio = Xdiffer/Ydiffer;
-    } else {
-        ratio = Ydiffer/Xdiffer;
-    }
-
-    if( Xdiffer > Ydiffer ){
-        if( current->GetStreetStart().GetX() <= current->GetStreetEnd().GetX() ){
-            this->xStep = 1;
-        } else {
-            this->xStep = -1;
-        }
-        if( current->GetStreetStart().GetY() <= current->GetStreetEnd().GetY() ){
-            this->yStep = 1/ratio;
-        } else {
-            this->yStep = -1/ratio;
-        }
-    } else {
-        if( current->GetStreetStart().GetY() <= current->GetStreetEnd().GetY() ){
-            this->yStep = 1;
-        } else {
-            this->yStep = -1;
-        }
-        if( current->GetStreetStart().GetX() <= current->GetStreetEnd().GetX() ){
-            this->xStep = 1/ratio;
-        } else {
-            //qDebug() << (1/ratio);
-            this->xStep = -1/ratio;
+    if( current->getStop() ){
+        if( current->getStop()->getID() != plannedStops[ currentStops ][ 0 ] ){
+            currentStops++;
         }
     }
 
-    if( switcher == false ){
-        this->posX = this->posX + this->xStep;
-        this->posY = this->posY + this->yStep;
-    } else {
-        this->posX = this->posX - this->xStep;
-        this->posY = this->posY - this->yStep;
-    }
 }
 
 QString Bus::getId(){
@@ -214,5 +226,72 @@ QString Bus::getStart(){
 
 void Bus::mousePressEvent( QGraphicsSceneMouseEvent *event )
 {
-    qDebug() << "Bus";
+    qDebug() << startTime;
+}
+
+void Bus::getStops(){
+
+    for( int i = 0; i < route.size(); i++ ){
+        if( route[ i ]->getStop() ){
+            stopsOnRoute.push_back( route[ i ]->getStop()->getID() );
+        }
+    }
+
+    // -1 protoze zastavka na konci je stejna jako na zacatku kvuli dojeti na zastavku
+    for( int i = currentStops; i < stopsOnRoute.size() - 1; i++ ){
+        if( stopsOnRoute[ i ] != plannedStops[ i ][ 0 ] ){
+            qDebug() << "Zastavky na ceste se neshoduji se zadanymi";
+            quick_exit( 60 );
+        }
+    }
+
+}
+
+float Bus::countStreetLenght( Street *street ){
+    float sx = street->GetStreetStart().GetX();
+    float sy = street->GetStreetStart().GetY();
+    float ex = street->GetStreetEnd().GetX();
+    float ey = street->GetStreetEnd().GetY();
+
+    float XDiff = abs( sx - ex );
+    float YDiff = abs( sy - ey );
+
+    if( street->getStop() ){
+        return( sqrt( pow( XDiff, 2 ) + pow( YDiff, 2 ) ) / 2 );
+    } else {
+        return( sqrt( pow( XDiff, 2 ) + pow( YDiff, 2 ) ) );
+    }
+}
+
+
+float Bus::testovaci( int number ){
+    int distance = 0;
+    QString stop1 = stopsOnRoute[ currentStop ];
+    QString stop2 = stopsOnRoute[ currentStop + 1 ];
+
+    //qDebug() << route[ number ]->GetStreetID();
+    //qDebug() << stop1;
+    //qDebug() << stop2;
+    for( int i = number; i < route.size(); i++ ){
+        //qDebug() << route[ i ]->GetStreetID();
+        distance = distance + countStreetLenght( route[ i ] );
+        if( route[ i ]->getStop() ){
+            if( route[ i ]->getStop()->getID() == stop2 ){
+                currentStop++;
+                return distance;
+            }
+        }
+    }
+}
+
+void Bus::countCoef( float distance, float time ){
+    if( distance == time ){
+        this->speedCoef = 1;
+    } else {
+        if( distance == 0 ){
+            qDebug() << "Nulova trasa";
+            quick_exit( 100 );
+        }
+        this->speedCoef = ( time / distance );
+    }
 }

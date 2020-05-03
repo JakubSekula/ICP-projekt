@@ -21,6 +21,7 @@ public:
     stop();
     void initialize( QString identif, QString name );
     QString getName();
+    QString getID();
     QRectF midd;
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event) override;

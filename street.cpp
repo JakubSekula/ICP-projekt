@@ -50,11 +50,11 @@ void Street::CountMiddle( coordinate c1, coordinate c2 ){
     int endX = c2.GetX();
     int endY = c2.GetY();
 
-    int midX = 0;
-    int midY = 0;
+    float midX = 0;
+    float midY = 0;
 
-    int XDifference = endX - startX;
-    int YDifference = endY - startY;
+    float XDifference = endX - startX;
+    float YDifference = endY - startY;
 
     midX = abs( XDifference ) / 2;
 

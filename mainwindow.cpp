@@ -85,6 +85,7 @@ void MainWindow::spawnBus(){
             //qDebug() << sysTime;
             //qDebug() << myTime;
             if( ( myTime == sysTime ) && ( bus->onmap == false ) ){
+                bus->startTime = sysTime;
                 scene->addItem( bus );
                 bus->setPos( bus->getMiddle() );
                 bus->setBus();

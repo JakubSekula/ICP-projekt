@@ -13,6 +13,7 @@ public:
     QString id;
     QString reps;
     QMap<QString,QVector<QVector<QString>>> stoptimes;
+    QVector<QVector<QString>>stoptime;
 
 public:
     line();

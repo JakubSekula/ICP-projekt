@@ -83,8 +83,6 @@ void readcsv::LoadBus( QString filecsv, QMap<QString, Street*> hashStreet, QMap<
             QVector<QVector<QString>> test = lines[ row[ 0 ] ]->getStoptInfo( row[ 0 ] );
             times.push_back( getTimeDiff( test[ 0 ][ 1 ], lines[ row[ 0 ] ]->reps.toInt(), iter ) );
 
-            getTimeDiff( test[ 0 ][ 1 ], lines[ row[ 0 ] ]->reps.toInt(), iter );
-
             if( times[ 0 ].size() == 1 ){
                 times[ 0 ] = "0" + times[ 0 ] + " : " + test[ 0 ][ 1 ].right( 2 );
             }
@@ -103,6 +101,10 @@ void readcsv::LoadBus( QString filecsv, QMap<QString, Street*> hashStreet, QMap<
                 }
             }
 
+            for( int i = 0; i < lines[ row[ 0 ] ]->stoptime.size(); i++ ){
+                bus->plannedStops.push_back( lines[ row[ 0 ] ]->stoptime[ i ] );
+            }
+
             int realstart;
 
             realstart = lines[ row[ 0 ] ]->reps.toInt() + lines[ row[ 0 ] ]->reps.toInt() * iter;
@@ -115,6 +117,7 @@ void readcsv::LoadBus( QString filecsv, QMap<QString, Street*> hashStreet, QMap<
 
             bus->setStart( times[ 0 ] );
 
+            bus->getStops();
             busHash.insert( QString::number( iter ), bus );
             iter++;
         }
@@ -152,62 +155,22 @@ void readcsv::LoadLine( QString filecsv ){
                     QStringList separate = row[ i ].split('/');
                     stoptime.push_back( separate[ 0 ] );
                     stoptime.push_back( separate[ 1 ] );
+                    Line->stoptime.push_back( stoptime );
                     entire.push_back( stoptime );
                     stoptime.clear();
                 }
             }
-            Line->fillMap( row[ 0 ], entire );
+        Line->fillMap( row[ 0 ], entire );
         lineHash.insert( row[ 0 ], Line );
     }
 }
 
 QString readcsv::getTimeDiff( QString time, int reps, int iter ){
-    QString time1 = time.left( 2 );
-    QString time2 = time.right( 2 );
-    time = time1 + time2;
-    int timeInt = time.toInt();
-    timeInt = timeInt + timeInt * iter;
-    time = QString::number( timeInt );
-    if( time.size() == 2 ){
-        float convert = time.toFloat() / 60;
-          time = "0" + QString::number( convert ).left( 1 );
-          QString zero;
-          zero = QString::number( convert );
-          if( zero.indexOf( "." ) != 1 ){
-              zero = "0";
-          } else {
-              QStringList separate = zero.split('.');
-              zero = "0." + separate[ 1 ];
-          }
-          convert = zero.toFloat() * 60;
-          convert = ( int ) convert;
-          QString add = QString::number( convert );
-          if( add.size() == 1 ){
-              add = "0" + add;
-              time = time + " : " + add;
-          } else {
-              time = time + " : " + QString::number( convert ).left( 2 );
-          }
-    } else if ( time.size() == 3 ){
-      float convert = time.toFloat() / 60;
-        time = "0" + QString::number( convert ).left( 1 );
-        QString zero;
-        zero = QString::number( convert );
-        if( zero.indexOf( "." ) != 1 ){
-            zero = "0";
-        } else {
-            QStringList separate = zero.split('.');
-            zero = "0." + separate[ 1 ];
-        }
-        convert = zero.toFloat() * 60;
-        convert = ( int ) convert;
-        QString add = QString::number( convert );
-        if( add.size() == 1 ){
-            add = "0" + add;
-            time = time + " : " + add;
-        } else {
-            time = time + " : " + QString::number( convert ).left( 2 );
-        }
+    int minutes = time.left(2).toInt();
+    int another_departure = ( int ) 60/reps;
+    QString departure = QString::number( another_departure * iter + minutes ) + " : " + time.right( 2 );
+    if( departure.size() == 6 ){
+        departure = "0" + departure;
     }
-    return time;
+    return departure;
 }

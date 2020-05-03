@@ -19,6 +19,7 @@ class Bus : public QGraphicsItem
 private:
     Street* current;
     int currenti;
+    int currentStops = 0;
     QMap<QString, Street*> streets;
     QVector<Street*> route;
     QString name;
@@ -28,6 +29,29 @@ private:
     float xStep;
     float yStep;
     bool switcher = false;
+    QVector<QString> stopsOnRoute;
+    QVector<int> additions;
+    float countStreetLenght( Street* street );
+    float speedCoef = 1;
+    float testovaci( int numberOfStop );
+    int stopnow = 0;
+    void countCoef( float distance, float time );
+    int currentStop = 0;
+    float diffx = 0;
+    float diffy = 0;
+    float step;
+    float streetLength = 0;
+    void countAdditions( float sx, float sy, float ex, float ey );
+    float hypotenuse = 0;
+    float rest = 0;
+    bool useRest = false;
+    bool stopAtStop = false;
+    bool changeStop = false;
+    int streetWithStop = 0;
+    float countDistanceToStop();
+    float length = 0;
+    bool stationary = false;
+    bool halflength = false;
 
 public:
     QRectF boundingRect() const override;
@@ -51,6 +75,13 @@ public:
     QString getStart();
     QString start;
     bool onmap = false;
+    QString startTime;
+    QVector<stop*> stops;
+    void getStops();
+    QVector<QVector<QString>>plannedStops;
+    QMap<int,QVector<float>>test;
+    int steps = 0;
+    int now = 0;
 
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event) override;

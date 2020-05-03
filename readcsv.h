@@ -24,10 +24,11 @@ public:
     QMap<QString,Street*> GetMapHash();
     QMap<QString, QMap<QString, Bus*>> GetBusHash();
     QMap<QString, line*> GetLineHash();
+    QMap<QString, QMap<QString, Bus*>> Busses;
+    QVector<QVector<QString>>stopTimes;
     void LoadMap( QString filecsv );
     void LoadBus( QString filecsv, QMap<QString, Street*> hashStreet, QMap<QString, line*> lines );
     void LoadLine( QString filecsv );
-    QMap<QString, QMap<QString, Bus*>> Busses;
 
 private:
     Bus* bus;
