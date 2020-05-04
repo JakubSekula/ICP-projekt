@@ -52,7 +52,6 @@ private slots:
     void get_time();
     void speed( int x );
     void BusMovement();
-    std::vector <float> CountInc();
 
 public:
     void initScene( QMap<QString, Street*> streets, QMap<QString, QMap<QString, Bus*>> busses, QMap<QString, line*> lines );

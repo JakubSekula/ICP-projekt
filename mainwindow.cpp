@@ -34,8 +34,6 @@ void MainWindow::zoom( int x ){
 void MainWindow::initScene( QMap<QString, Street*> streets, QMap<QString, QMap<QString, Bus*>> bussesHash, QMap<QString, line*> linkHash ){
 
     QPainter painter(this);
-    QPen blue( Qt::blue, 4 );
-    QPen red( Qt::red, 2 );
 
     this->bussesHash = bussesHash;
     this->linkHash = linkHash;
@@ -44,7 +42,7 @@ void MainWindow::initScene( QMap<QString, Street*> streets, QMap<QString, QMap<Q
 
     this->scene = scene;
 
-    ui->graphicsView->setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
+    ui->graphicsView->setViewportUpdateMode( QGraphicsView::FullViewportUpdate );
 
     ui->graphicsView->setScene( scene );
 
@@ -82,8 +80,6 @@ void MainWindow::spawnBus(){
         for( auto* bus : *test ){
             QString sysTime = ui->lineEdit->text().right( 7 ).split( ' ', QString::SkipEmptyParts ).join( "" );
             QString myTime = bus->getStart().split( ' ', QString::SkipEmptyParts ).join( "" );
-            //qDebug() << sysTime;
-            //qDebug() << myTime;
             if( ( myTime == sysTime ) && ( bus->onmap == false ) ){
                 bus->startTime = sysTime;
                 scene->addItem( bus );
@@ -114,7 +110,6 @@ void MainWindow::speed( int x ){
 
 void MainWindow::BusMovement(){
     int o = 0;
-    //qDebug() << jump;
     while( o < jump ){
         for( int i = 0; i < busses.size(); i++ ){
             if( i != 0 ){
@@ -125,28 +120,4 @@ void MainWindow::BusMovement(){
         }
         o++;
     }
-}
-
-std::vector <float> MainWindow::CountInc(){
-    float Xdiffer = abs( 504 - posEX );
-    float Ydiffer = abs( 217 - posEY );
-
-    std::vector<float> result;
-
-    if( Xdiffer > Ydiffer ){
-        if( posEX < posX ){
-            result.push_back( -1 );
-        } else {
-            result.push_back( 1 );
-        }
-        float Odifference = ( Xdiffer/Ydiffer );
-        result.push_back( 1/Odifference );
-        return( result );
-    } else {
-        float Odifference = ( Xdiffer/Ydiffer );
-        result.push_back( 1/Odifference );
-        result.push_back( 1 );
-        return( result );
-    }
-
 }

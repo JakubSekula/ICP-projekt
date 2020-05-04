@@ -94,14 +94,11 @@ void Bus::countAdditions( float sx, float sy, float ex, float ey ){
         YDiff = YDiff / 2;
     }
 
-    //qDebug() << streetLength + step << hypotenuse;
     if( streetLength + step >= hypotenuse ){
         step = hypotenuse - streetLength;
         rest = step;
         newStreet = true;
     }
-
-    //qDebug() << streetLength << hypotenuse;
 
     if( useRest ){
         stepX = XDiff / ( hypotenuse / ( step + rest ) );
@@ -114,7 +111,7 @@ void Bus::countAdditions( float sx, float sy, float ex, float ey ){
         streetLength = streetLength + step;
     }
 
-   if( ( ( streetLength > hypotenuse / 2 ) && ( ( streetLength - hypotenuse ) <= 0.5 ) ) && ( current->getStop() ) && currenti != 1 && stopAtStop ){
+    if( ( ( streetLength > hypotenuse / 2 ) && ( streetLength - step < hypotenuse / 2 ) ) && ( current->getStop() ) && currenti != 1 && stopAtStop ){
         this->posX = current->GetMiddle()->GetX();
         this->posY = current->GetMiddle()->GetY();
         changeStop = true;
@@ -177,7 +174,7 @@ void Bus::nextPos(){
 
     step = length / ( int ) length;
 
-    step = ( length * step ) / 30;
+    step = ( length * step ) / 120;
 
     if( currenti == 1 ){
         countAdditions( current->GetMiddle()->GetX(), current->GetMiddle()->GetY(), current->GetStreetEnd().GetX(), current->GetStreetEnd().GetY() );
@@ -260,38 +257,5 @@ float Bus::countStreetLenght( Street *street ){
         return( sqrt( pow( XDiff, 2 ) + pow( YDiff, 2 ) ) / 2 );
     } else {
         return( sqrt( pow( XDiff, 2 ) + pow( YDiff, 2 ) ) );
-    }
-}
-
-
-float Bus::testovaci( int number ){
-    int distance = 0;
-    QString stop1 = stopsOnRoute[ currentStop ];
-    QString stop2 = stopsOnRoute[ currentStop + 1 ];
-
-    //qDebug() << route[ number ]->GetStreetID();
-    //qDebug() << stop1;
-    //qDebug() << stop2;
-    for( int i = number; i < route.size(); i++ ){
-        //qDebug() << route[ i ]->GetStreetID();
-        distance = distance + countStreetLenght( route[ i ] );
-        if( route[ i ]->getStop() ){
-            if( route[ i ]->getStop()->getID() == stop2 ){
-                currentStop++;
-                return distance;
-            }
-        }
-    }
-}
-
-void Bus::countCoef( float distance, float time ){
-    if( distance == time ){
-        this->speedCoef = 1;
-    } else {
-        if( distance == 0 ){
-            qDebug() << "Nulova trasa";
-            quick_exit( 100 );
-        }
-        this->speedCoef = ( time / distance );
     }
 }

@@ -33,9 +33,7 @@ private:
     QVector<int> additions;
     float countStreetLenght( Street* street );
     float speedCoef = 1;
-    float testovaci( int numberOfStop );
     int stopnow = 0;
-    void countCoef( float distance, float time );
     int currentStop = 0;
     float diffx = 0;
     float diffy = 0;
