@@ -77,10 +77,12 @@ void readcsv::LoadBus( QString filecsv, QMap<QString, Street*> hashStreet, QMap<
         }
 
         int iter = 0;
+
         while( iter < lines[ row[ 0 ] ]->reps.toInt() ){
 
             QVector<QString> times;
             QVector<QVector<QString>> test = lines[ row[ 0 ] ]->getStoptInfo( row[ 0 ] );
+
             times.push_back( getTimeDiff( test[ 0 ][ 1 ], lines[ row[ 0 ] ]->reps.toInt(), iter ) );
 
             if( times[ 0 ].size() == 1 ){
@@ -101,6 +103,7 @@ void readcsv::LoadBus( QString filecsv, QMap<QString, Street*> hashStreet, QMap<
                 }
             }
 
+            qDebug() << lines[ row[ 0 ] ]->stoptime.size();
             for( int i = 0; i < lines[ row[ 0 ] ]->stoptime.size(); i++ ){
                 bus->plannedStops.push_back( lines[ row[ 0 ] ]->stoptime[ i ] );
             }
@@ -160,6 +163,12 @@ void readcsv::LoadLine( QString filecsv ){
                     stoptime.clear();
                 }
             }
+            entire.push_back( entire[ 0 ] );
+        stoptime.push_back( entire[ 0 ][ 0 ] );
+        // signalizace dojezdu
+        stoptime.push_back( "99:99" );
+        Line->stoptime.push_back( stoptime );
+        stoptime.clear();
         Line->fillMap( row[ 0 ], entire );
         lineHash.insert( row[ 0 ], Line );
     }

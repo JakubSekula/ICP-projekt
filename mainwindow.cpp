@@ -108,14 +108,41 @@ void MainWindow::speed( int x ){
     timer->start( 1000/x );
 }
 
+bool MainWindow::depart( Bus* bus ){
+    QString times = ui->lineEdit->text().right( 7 );
+    times = times.left( 2 ) + times.right( 2 );
+    int timerTime = times.toInt();
+    QString busDepart = bus->departure;
+    if( bus->departure == "" ){
+        busDepart = bus->start;
+    } else {
+        busDepart = bus->departure;
+    }
+    busDepart = busDepart.left( 2 ) + busDepart.right( 2 );
+    int busDep = busDepart.toUInt();
+
+    if( timerTime == 0 ){
+        bus->atEnd = false;
+    }
+    if( timerTime < busDep ){
+        return false;
+    } else {
+        if( bus->atEnd == false ){
+            return true;
+        }
+    }
+}
+
 void MainWindow::BusMovement(){
     int o = 0;
     while( o < jump ){
         for( int i = 0; i < busses.size(); i++ ){
             if( i != 0 ){
                 auto* bus = busses[ i ];
-                bus->setPos( busses[ i ]->getPos() );
-                busses[ i ]->setBus();
+                if( depart( bus ) ){
+                    bus->setPos( busses[ i ]->getPos() );
+                    busses[ i ]->setBus();
+                }
             }
         }
         o++;

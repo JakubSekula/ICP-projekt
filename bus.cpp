@@ -72,6 +72,16 @@ QPointF Bus::getPos(){
     return x;
 }
 
+void Bus::setNul(){
+    atEnd = true;
+    switcher = false;
+    stationary = false;
+    halflength = false;
+    useRest = false;
+    stopAtStop = false;
+    currentStops = 0;
+}
+
 void Bus::countAdditions( float sx, float sy, float ex, float ey ){
 
     bool newStreet = false;
@@ -111,13 +121,18 @@ void Bus::countAdditions( float sx, float sy, float ex, float ey ){
         streetLength = streetLength + step;
     }
 
-    if( ( ( streetLength > hypotenuse / 2 ) && ( streetLength - step < hypotenuse / 2 ) ) && ( current->getStop() ) && currenti != 1 && stopAtStop ){
+    if( ( ( streetLength > hypotenuse / 2 ) && ( streetLength - step < hypotenuse / 2 ) ) && ( current->getStop() ) && stopAtStop ){
         this->posX = current->GetMiddle()->GetX();
         this->posY = current->GetMiddle()->GetY();
         changeStop = true;
         stopAtStop = false;
         stationary = true;
         halflength = true;
+        if( now == plannedStops.size() - 2 ){
+            now = -1;
+            departure = plannedStops[ 0 ][ 1 ];
+            setNul();
+        }
     } else if ( sx <= ex ){
         if( sy <= ey ){
             this->posX = this->posX + stepX;
@@ -136,14 +151,23 @@ void Bus::countAdditions( float sx, float sy, float ex, float ey ){
         }
     }
 
-    if( newStreet && route.size() != currenti + 1 ){
+    if( newStreet && route.size() - 1 != currenti ){
         current = route[ currenti ];
         currenti++;
         stopAtStop = true;
         useRest = true;
         halflength = false;
         streetLength = 0;
+    } else if ( newStreet && route.size() - 1 == currenti ){
+        currenti = 1;
+        current = route[ currenti - 1 ];
+        stopAtStop = true;
+        useRest = true;
+        halflength = false;
+        streetLength = 0;
+        round = true;
     }
+
 }
 
 float Bus::countDistanceToStop(){
@@ -151,12 +175,31 @@ float Bus::countDistanceToStop(){
     for( int i = currenti - 1; i < route.size(); i++ ){
         length = length + countStreetLenght( route[ i ] );
         if( route[ i ]->getStop() ){
+            if( plannedStops.size() <= ( now + 1 ) ){
+                break;
+            }
             if( route[ i ]->getStop()->getID() == plannedStops[ now + 1 ][ 0 ] ){
                 break;
             }
         }
     }
     return length;
+}
+
+int Bus::timeToNext(){
+
+    int firstStopMin = plannedStops[ now ][ 1 ].left( 2 ).toInt();
+    int secondStopMin = plannedStops[ now + 1 ][ 1 ].left( 2 ).toInt();
+    int firtStopSec = plannedStops[ now ][ 1 ].right( 2 ).toInt();
+    int secondStopSec = plannedStops[ now + 1 ][ 1 ].right( 2 ).toInt();
+
+    if( secondStopMin == 99 ){
+        return 100;
+    }
+
+    int secondsToStop = ( secondStopMin - firstStopMin )*60 + ( secondStopSec - firtStopSec );
+
+    return secondsToStop;
 }
 
 void Bus::nextPos(){
@@ -170,14 +213,18 @@ void Bus::nextPos(){
         changeStop = false;
     }
 
-    //qDebug() << length;
-
     step = length / ( int ) length;
 
-    step = ( length * step ) / 120;
+    int timeTo = timeToNext();
 
-    if( currenti == 1 ){
+    departure = plannedStops[ now ][ 1 ];
+
+    step = ( length * step ) / ( timeTo - 3 );
+
+    if( currenti == 1 && !round ){
         countAdditions( current->GetMiddle()->GetX(), current->GetMiddle()->GetY(), current->GetStreetEnd().GetX(), current->GetStreetEnd().GetY() );
+    } else if( currenti == 1 && round ){
+        countAdditions( current->GetStreetStart().GetX(), current->GetStreetStart().GetY(), current->GetStreetEnd().GetX(), current->GetStreetEnd().GetY() );
     } else {
         if( current->GetStreetEnd().GetX() == route[ currenti - 2 ]->GetStreetEnd().GetX() && current->GetStreetEnd().GetY() == route[ currenti - 2 ]->GetStreetEnd().GetY() ){
             countAdditions( current->GetStreetEnd().GetX(), current->GetStreetEnd().GetY(), current->GetStreetStart().GetX(), current->GetStreetStart().GetY() );
@@ -189,9 +236,11 @@ void Bus::nextPos(){
     }
 
     if( current->getStop() ){
+        qDebug() << "mam te pico";
         if( current->getStop()->getID() != plannedStops[ currentStops ][ 0 ] ){
             currentStops++;
         }
+        qDebug() << "sem uz se nedostanu";
     }
 
 }

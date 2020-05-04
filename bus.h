@@ -50,8 +50,11 @@ private:
     float length = 0;
     bool stationary = false;
     bool halflength = false;
+    int timeToNext();
 
 public:
+    bool newRound = false;
+    QString departure;
     QRectF boundingRect() const override;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = Q_NULLPTR) override;
     QGraphicsEllipseItem* bus{nullptr};
@@ -80,6 +83,9 @@ public:
     QMap<int,QVector<float>>test;
     int steps = 0;
     int now = 0;
+    bool round = false;
+    bool atEnd = false;
+    void setNul();
 
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event) override;

@@ -46,6 +46,7 @@ private:
     QGraphicsScene* scene;
     QTime lastTime;
     int jump;
+    bool depart( Bus* bus );
 
 private slots:
     void zoom( int x );
