@@ -73,12 +73,13 @@ QPointF Bus::getPos(){
 }
 
 void Bus::setNul(){
-    atEnd = true;
+    atEnd = false;
     switcher = false;
     stationary = false;
     halflength = false;
     useRest = false;
     stopAtStop = false;
+    enRoute = false;
     currentStops = 0;
 }
 
@@ -132,6 +133,8 @@ void Bus::countAdditions( float sx, float sy, float ex, float ey ){
             now = -1;
             departure = plannedStops[ 0 ][ 1 ];
             setNul();
+        } else {
+            departure = plannedStops[ now + 1 ][ 1 ];
         }
     } else if ( sx <= ex ){
         if( sy <= ey ){
@@ -199,6 +202,13 @@ int Bus::timeToNext(){
 
     int secondsToStop = ( secondStopMin - firstStopMin )*60 + ( secondStopSec - firtStopSec );
 
+    // TODO osetreni stejnych minnut ale mensich sekund u druheho
+    if( secondStopMin < firstStopMin ){
+        secondsToStop =  3600 - firtStopSec - firstStopMin * 60;
+        secondsToStop = secondsToStop + secondStopMin * 60 + secondStopSec;
+    }
+
+
     return secondsToStop;
 }
 
@@ -217,9 +227,11 @@ void Bus::nextPos(){
 
     int timeTo = timeToNext();
 
+    step = ( length * step ) / ( timeTo - 3 );
+
     departure = plannedStops[ now ][ 1 ];
 
-    step = ( length * step ) / ( timeTo - 3 );
+    //qDebug() << step;
 
     if( currenti == 1 && !round ){
         countAdditions( current->GetMiddle()->GetX(), current->GetMiddle()->GetY(), current->GetStreetEnd().GetX(), current->GetStreetEnd().GetY() );
@@ -236,11 +248,9 @@ void Bus::nextPos(){
     }
 
     if( current->getStop() ){
-        qDebug() << "mam te pico";
         if( current->getStop()->getID() != plannedStops[ currentStops ][ 0 ] ){
             currentStops++;
         }
-        qDebug() << "sem uz se nedostanu";
     }
 
 }

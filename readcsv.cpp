@@ -103,9 +103,18 @@ void readcsv::LoadBus( QString filecsv, QMap<QString, Street*> hashStreet, QMap<
                 }
             }
 
-            qDebug() << lines[ row[ 0 ] ]->stoptime.size();
             for( int i = 0; i < lines[ row[ 0 ] ]->stoptime.size(); i++ ){
-                bus->plannedStops.push_back( lines[ row[ 0 ] ]->stoptime[ i ] );
+                QVector<QString> test;
+                if( i < lines[ row[ 0 ] ]->stoptime.size() - 1 ){
+                    test.push_back( lines[ row[ 0 ] ]->stoptime[ i ][ 0 ] );
+                    test.push_back( getTimeDiff( lines[ row[ 0 ] ]->stoptime[ i ][ 1 ], lines[ row[ 0 ] ]->reps.toInt(), iter ) );
+                    //lines[ row[ 0 ] ]->stoptime[ i ][ 1 ] = getTimeDiff( lines[ row[ 0 ] ]->stoptime[ i ][ 1 ], lines[ row[ 0 ] ]->reps.toInt(), iter );
+                } else {
+                    test.push_back( lines[ row[ 0 ] ]->stoptime[ i ][ 0 ] );
+                    test.push_back( lines[ row[ 0 ] ]->stoptime[ i ][ 1 ] );
+                }
+                bus->plannedStops.push_back( test );
+                test.clear();
             }
 
             int realstart;
@@ -180,6 +189,15 @@ QString readcsv::getTimeDiff( QString time, int reps, int iter ){
     QString departure = QString::number( another_departure * iter + minutes ) + " : " + time.right( 2 );
     if( departure.size() == 6 ){
         departure = "0" + departure;
+    }
+
+    departure = departure.split( ' ', QString::SkipEmptyParts ).join( "" );
+
+    if( departure.left( 2 ).toInt() >= 60 ){
+        departure = QString::number( departure.left( 2 ).toInt() - 60 ) + ":" + time.right( 2 );
+        if( departure.size() == 4 ){
+            departure = "0" + departure;
+        }
     }
     return departure;
 }

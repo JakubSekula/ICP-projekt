@@ -48,11 +48,12 @@ private:
     int streetWithStop = 0;
     float countDistanceToStop();
     float length = 0;
-    bool stationary = false;
     bool halflength = false;
     int timeToNext();
 
 public:
+    bool enRoute = false;
+    bool stationary = false;
     bool newRound = false;
     QString departure;
     QRectF boundingRect() const override;

@@ -79,12 +79,13 @@ void MainWindow::spawnBus(){
     for( test = bussesHash.begin(); test != bussesHash.end(); test++ ){
         for( auto* bus : *test ){
             QString sysTime = ui->lineEdit->text().right( 7 ).split( ' ', QString::SkipEmptyParts ).join( "" );
-            QString myTime = bus->getStart().split( ' ', QString::SkipEmptyParts ).join( "" );
+            QString myTime = bus->getStart();
             if( ( myTime == sysTime ) && ( bus->onmap == false ) ){
                 bus->startTime = sysTime;
                 scene->addItem( bus );
                 bus->setPos( bus->getMiddle() );
                 bus->setBus();
+                bus->enRoute = true;
                 this->busses.push_back( bus );
             }
         }
@@ -121,14 +122,21 @@ bool MainWindow::depart( Bus* bus ){
     busDepart = busDepart.left( 2 ) + busDepart.right( 2 );
     int busDep = busDepart.toUInt();
 
-    if( timerTime == 0 ){
-        bus->atEnd = false;
+    int busStart = ( bus->start.left( 2 ) + bus->start.right( 2 ) ).toInt();
+    if( busStart == timerTime ){
+        bus->enRoute = true;
     }
-    if( timerTime < busDep ){
+    if( bus->enRoute == false ){
+        return false;
+    }
+    //qDebug() << timerTime << busDep;
+    if( timerTime < busDep && bus->stationary ){
         return false;
     } else {
         if( bus->atEnd == false ){
             return true;
+        } else {
+            return false;
         }
     }
 }
@@ -139,7 +147,7 @@ void MainWindow::BusMovement(){
         for( int i = 0; i < busses.size(); i++ ){
             if( i != 0 ){
                 auto* bus = busses[ i ];
-                if( depart( bus ) ){
+                if( depart( bus ) && bus->enRoute ){
                     bus->setPos( busses[ i ]->getPos() );
                     busses[ i ]->setBus();
                 }
