@@ -72,6 +72,9 @@
     </item>
     <item>
      <widget class="QSlider" name="verticalSlider">
+      <property name="value">
+       <number>15</number>
+      </property>
       <property name="orientation">
        <enum>Qt::Vertical</enum>
       </property>

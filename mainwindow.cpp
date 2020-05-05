@@ -90,7 +90,7 @@ void MainWindow::spawnBus(){
             QString sysTime = ui->lineEdit->text().right( 7 ).split( ' ', QString::SkipEmptyParts ).join( "" );
             QString myTime = bus->getStart();
             if( ( myTime == sysTime ) && ( bus->onmap == false ) ){
-                connect( bus, SIGNAL( valueChangedd( QString ) ), this, SLOT( testys( QString ) ) );
+                connect( bus, SIGNAL( valueChangedd( QVector<QVector<QString>> ) ), this, SLOT( BusSignal( QVector<QVector<QString>> ) ) );
                 bus->startTime = sysTime;
                 scene->addItem( bus );
                 bus->setPos( bus->getMiddle() );
@@ -170,6 +170,16 @@ void MainWindow::BusMovement(){
     }
 }
 
-void MainWindow::testys( QString test ){
-    qDebug() << test;
+void MainWindow::BusSignal( QVector<QVector<QString>> stops ){
+    QGraphicsScene* scene2 = new QGraphicsScene( ui->graphicsView_2 );
+    ui->graphicsView_2->setScene( scene2 );
+
+    int x = 0;
+
+    for( int i = 0; i < stops.size() - 1; i++ ){
+        scene2->addLine( x, 0, x + 50, 0 );
+        scene2->addEllipse( x + 50, 0 - 2.5, 5, 5 );
+        x = x + 50;
+    }
+
 }

@@ -211,7 +211,7 @@ protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
 
 signals:
-    void valueChangedd( QString startTime );
+    void valueChangedd( QVector<QVector<QString>> stops );
 };
 
 #endif // BUS_H
