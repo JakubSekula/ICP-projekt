@@ -90,7 +90,7 @@ void MainWindow::spawnBus(){
             QString sysTime = ui->lineEdit->text().right( 7 ).split( ' ', QString::SkipEmptyParts ).join( "" );
             QString myTime = bus->getStart();
             if( ( myTime == sysTime ) && ( bus->onmap == false ) ){
-                connect( bus, SIGNAL( valueChangedd( QVector<QVector<QString>> ) ), this, SLOT( BusSignal( QVector<QVector<QString>> ) ) );
+                connect( bus, SIGNAL( valueChangedd( QVector<QVector<QString>>, int, QVector<Street*> ) ), this, SLOT( BusSignal( QVector<QVector<QString>>, int, QVector<Street*> ) ) );
                 bus->startTime = sysTime;
                 scene->addItem( bus );
                 bus->setPos( bus->getMiddle() );
@@ -170,16 +170,46 @@ void MainWindow::BusMovement(){
     }
 }
 
-void MainWindow::BusSignal( QVector<QVector<QString>> stops ){
+void MainWindow::BusSignal( QVector<QVector<QString>> stops, int currTime, QVector<Street*> route ){
     QGraphicsScene* scene2 = new QGraphicsScene( ui->graphicsView_2 );
     ui->graphicsView_2->setScene( scene2 );
 
     int x = 0;
 
+    for( int i = 0; i < route.size(); i++  ){
+        scene->addLine( route[ i ]->GetStreetStart().GetX(), route[ i ]->GetStreetStart().GetY(), route[ i ]->GetStreetEnd().GetX(), route[ i ]->GetStreetEnd().GetY(), QPen( Qt::blue, 3 ) );
+    }
+
     for( int i = 0; i < stops.size() - 1; i++ ){
-        scene2->addLine( x, 0, x + 50, 0 );
-        scene2->addEllipse( x + 50, 0 - 2.5, 5, 5 );
-        x = x + 50;
+        if( i < stops.size() - 2 ){
+            scene2->addLine( x, 0, x + 70, 0, QPen( Qt::black, 1 ) );
+        }
+
+        if( currTime == i && i < stops.size() - 2 ){
+            scene2->addEllipse( x + 35 , 0 - 2.5, 5, 5, QPen( Qt::red, 5 ) );
+        } else if ( i == stops.size() - 2 && currTime == i ){
+            QGraphicsTextItem* busEnd = scene2->addText( "bus heading to end station" );
+            busEnd->setDefaultTextColor( Qt::red );
+            busEnd->setPos( x + 35, -10 );
+        }
+
+        x = x + 70;
+    }
+
+    x = 0;
+
+    for( int i = 0; i < stops.size() - 1; i++ ){
+        scene2->addEllipse( x , 0 - 2.5, 5, 5, QPen( Qt::blue, 5 ) );
+
+        QGraphicsTextItem* textDepTime = scene2->addText( stops[ i ][ 1 ] );
+        textDepTime->setTextWidth( 70 );
+        textDepTime->setPos( x - 20, - 30 );
+
+        QGraphicsTextItem* textStreetId = scene2->addText( stops[ i ][ 0 ] );
+        textStreetId->setTextWidth( 70 );
+        textStreetId->setPos( x - 20, 10 );
+
+        x = x + 70;
     }
 
 }

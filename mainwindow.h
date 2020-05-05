@@ -67,7 +67,7 @@ private slots:
      * @brief MainWindow::BusMovement Vykreslovanie autobusu, pohyb autobusu
      */
     void BusMovement();
-    void BusSignal( QVector<QVector<QString>> stops );
+    void BusSignal( QVector<QVector<QString>> stops, int currTime, QVector<Street*> route );
 
 public:
 

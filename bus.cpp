@@ -365,7 +365,7 @@ QString Bus::getStart(){
  */
 void Bus::mousePressEvent( QGraphicsSceneMouseEvent *event )
 {
-    emit valueChangedd( plannedStops );
+    emit valueChangedd( plannedStops, now, route );
 }
 
 /**

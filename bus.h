@@ -208,10 +208,10 @@ protected:
      * @brief Bus::mousePressEvent
      * @param event
      */
-    void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
+    void mousePressEvent( QGraphicsSceneMouseEvent *event ) override;
 
 signals:
-    void valueChangedd( QVector<QVector<QString>> stops );
+    void valueChangedd( QVector<QVector<QString>> stops, int currentPos, QVector<Street*> route );
 };
 
 #endif // BUS_H
