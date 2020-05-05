@@ -21,24 +21,70 @@ private:
     coordinate* middle = NULL;
 
 public:
+
+    /**
+     * @brief Street::Street Konstruktor. Naastavenie cesty
+     * @param id
+     * @param name
+     * @param c1
+     * @param c2
+     */
     Street( QString id, QString name, coordinate c1, coordinate c2 );
 
+    /**
+     * @brief Street::GetStreetID
+     * @return Vrati id cesty
+     */
     QString GetStreetID();
 
+    /**
+     * @brief Street::GetStreetName
+     * @return Vrati meno cesty
+     */
     QString GetStreetName();
 
+    /**
+     * @brief Street::GetStreetStart
+     * @return Vrati zaciatocny suradnicu cesty
+     */
     coordinate GetStreetStart();
 
+    /**
+     * @brief Street::GetStreetEnd
+     * @return Vrati koncovu suradnicu cesty
+     */
     coordinate GetStreetEnd();
 
+    /**
+     * @brief Street::AddStop Prida zastavku na cestu
+     * @param stop zastavka na pridanie
+     */
     void AddStop( stop* stop );
 
+    /**
+     * @brief Street::getStop
+     * @return Vrati pointer na zastavku
+     */
     stop* getStop();
 
+    /**
+     * @brief Street::CountMiddle Vypocita stred cesty
+     * @param c1 Zaciatocna suradnica
+     * @param c2 Konecna suradnica
+     */
     void CountMiddle( coordinate c1, coordinate c2 );
 
+    /**
+     * @brief Street::GetMiddle
+     * @return Vrati stred cesty
+     */
     coordinate* GetMiddle();
 
+    /**
+     * @brief Street::equals Metoda pre porovnanie ciest.
+     * @param street
+     * @return Vrati true ak sa cesty rovnaju. inak false
+     */
     bool equals( Street* street );
 
 };

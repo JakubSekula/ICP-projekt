@@ -26,8 +26,23 @@ public:
     QMap<QString, line*> GetLineHash();
     QMap<QString, QMap<QString, Bus*>> Busses;
     QVector<QVector<QString>>stopTimes;
+
+    /**
+     * @brief readcsv::LoadMap precitanie .csv suboru a nacitanie hodnot
+     * @param filecsv .csv subor na citanie
+     */
     void LoadMap( QString filecsv );
+
+    /**
+     * @brief readcsv::LoadBus precitanie .csv suboru a nacitanie hodnot
+     * @param filecsv .csv subor na citanie
+     */
     void LoadBus( QString filecsv, QMap<QString, Street*> hashStreet, QMap<QString, line*> lines );
+
+    /**
+     * @brief readcsv::LoadLine precitanie .csv suboru a nacitanie hodnot
+     * @param filecsv .csv subor na citanie
+     */
     void LoadLine( QString filecsv );
 
 private:
@@ -40,6 +55,14 @@ private:
     QMap<QString, Street*> hash;
     QMap<QString, Bus*> busHash;
     QMap<QString, line*> lineHash;
+
+    /**
+     * @brief readcsv::getTimeDiff Vypocitanie odchodu
+     * @param time
+     * @param reps
+     * @param iter
+     * @return Vrati odchod autobusu
+     */
     QString getTimeDiff( QString time, int reps, int iter );
 };
 
