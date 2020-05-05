@@ -7,6 +7,13 @@
 #include "street.h"
 #include <QDebug>
 
+/**
+ * @brief Street::Street Konstruktor. Naastavenie cesty
+ * @param id
+ * @param name
+ * @param c1
+ * @param c2
+ */
 Street::Street( QString id, QString name, coordinate c1, coordinate c2 ){
     this->name = name;
     this->id = id;
@@ -14,26 +21,50 @@ Street::Street( QString id, QString name, coordinate c1, coordinate c2 ){
     coordinates.push_back( c2 );
 }
 
+/**
+ * @brief Street::GetStreetID
+ * @return Vrati id cesty
+ */
 QString Street::GetStreetID(){
     return id;
 }
 
+/**
+ * @brief Street::GetStreetName
+ * @return Vrati meno cesty
+ */
 QString Street::GetStreetName(){
     return name;
 }
 
+/**
+ * @brief Street::GetStreetStart
+ * @return Vrati zaciatocny suradnicu cesty
+ */
 coordinate Street::GetStreetStart(){
     return( coordinates.front() );
 }
 
+/**
+ * @brief Street::GetStreetEnd
+ * @return Vrati koncovu suradnicu cesty
+ */
 coordinate Street::GetStreetEnd(){
     return( coordinates.back() );
 }
 
+/**
+ * @brief Street::AddStop Prida zastavku na cestu
+ * @param stop zastavka na pridanie
+ */
 void Street::AddStop( stop* stop ){
     this->s1 = stop;
 }
 
+/**
+ * @brief Street::getStop
+ * @return Vrati pointer na zastavku
+ */
 stop* Street::getStop(){
     if( this->s1 == NULL ){
         return NULL;
@@ -44,6 +75,11 @@ stop* Street::getStop(){
     }
 }
 
+/**
+ * @brief Street::CountMiddle Vypocita stred cesty
+ * @param c1 Zaciatocna suradnica
+ * @param c2 Konecna suradnica
+ */
 void Street::CountMiddle( coordinate c1, coordinate c2 ){
     int startX = c1.GetX();
     int startY = c1.GetY();
@@ -78,10 +114,19 @@ void Street::CountMiddle( coordinate c1, coordinate c2 ){
     this->middle = new coordinate( midX, midY );
 }
 
+/**
+ * @brief Street::GetMiddle
+ * @return Vrati stred cesty
+ */
 coordinate* Street::GetMiddle(){
     return this->middle;
 }
 
+/**
+ * @brief Street::equals Metoda pre porovnanie ciest.
+ * @param street
+ * @return Vrati true ak sa cesty rovnaju. inak false
+ */
 bool Street::equals(Street *street){
     if( ( this->GetStreetEnd().GetX() == street->GetStreetStart().GetX() && this->GetStreetEnd().GetY() == street->GetStreetStart().GetY() ) ||
         ( this->GetStreetEnd().GetX() == street->GetStreetEnd().GetX() && this->GetStreetEnd().GetY() == street->GetStreetEnd().GetY() )){

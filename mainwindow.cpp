@@ -31,6 +31,12 @@ void MainWindow::zoom( int x ){
     ui->graphicsView->setTransform( QTransform( scale, org.m12(), org.m21(), scale, org.dx(), org.dy()));
 }
 
+/**
+ * @brief MainWindow::initScene Vykreslenie mapy
+ * @param streets
+ * @param bussesHash
+ * @param linkHash
+ */
 void MainWindow::initScene( QMap<QString, Street*> streets, QMap<QString, QMap<QString, Bus*>> bussesHash, QMap<QString, line*> linkHash ){
 
     QPainter painter(this);
@@ -73,6 +79,9 @@ void MainWindow::initScene( QMap<QString, Street*> streets, QMap<QString, QMap<Q
 
 }
 
+/**
+ * @brief MainWindow::spawnBus Pridanie autobusu do mapy na zaciatocnu zastavku
+ */
 void MainWindow::spawnBus(){
 
     QMap<QString, QMap<QString,Bus*>>::iterator test;
@@ -124,10 +133,10 @@ bool MainWindow::depart( Bus* bus ){
 
     int busStart = ( bus->start.left( 2 ) + bus->start.right( 2 ) ).toInt();
     if( busStart == timerTime ){
-        bus->enRoute = true;
+    bus->enRoute = true;
     }
     if( bus->enRoute == false ){
-        return false;
+    return false;
     }
     //qDebug() << timerTime << busDep;
     if( timerTime < busDep && bus->stationary ){
@@ -141,13 +150,16 @@ bool MainWindow::depart( Bus* bus ){
     }
 }
 
+/**
+ * @brief MainWindow::BusMovement Vykreslovanie autobusu, pohyb autobusu
+ */
 void MainWindow::BusMovement(){
     int o = 0;
     while( o < jump ){
         for( int i = 0; i < busses.size(); i++ ){
             if( i != 0 ){
                 auto* bus = busses[ i ];
-                if( depart( bus ) && bus->enRoute ){
+                 if( depart( bus ) && bus->enRoute ){
                     bus->setPos( busses[ i ]->getPos() );
                     busses[ i ]->setBus();
                 }

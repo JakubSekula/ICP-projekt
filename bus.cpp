@@ -1,9 +1,19 @@
 #include "bus.h"
 
+/**
+ * @brief Bus::boundingRect Vytvori kruh, znacku autobusu
+ * @return Vracia objekt, kruh
+ */
 QRectF Bus::boundingRect() const{
     return QRectF( 0, 0, 5, 5 );
 }
 
+/**
+ * @brief Bus::paint Vykreslenie kruhu
+ * @param painter
+ * @param option
+ * @param widget
+ */
 void Bus::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
     QRectF rec = boundingRect();
@@ -13,22 +23,41 @@ void Bus::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidg
     painter->drawEllipse( rec );
 }
 
+/**
+ * @brief Bus::Bus Konstruktor, zavola funkciu getBus()
+ */
 Bus::Bus(){
     getBus();
 }
 
+/**
+ * @brief Bus::getStreets Nastavi
+ * @param str
+ */
 void Bus::getStreets( QMap<QString, Street*> str ){
     this->streets = str;
 }
 
+/**
+ * @brief Bus::getBus
+ * @return Vrati pointer na widget kruhu zanzornujuceho autobus
+ */
 QGraphicsEllipseItem *Bus::getBus(){
     return this->bus;
 }
 
+/**
+ * @brief Bus::getRoute
+ * @return  vracia odkaz na trasu
+ */
 QVector<Street *> Bus::getRoute(){
     return( route );
 }
 
+/**
+ * @brief Bus::setRout nastavienie trasy
+ * @param streetId ID ulice
+ */
 void Bus::setRout( QString streetId ){
     int size = route.size();
     if( size == 0 ){
@@ -45,14 +74,25 @@ void Bus::setRout( QString streetId ){
     this->currenti = 1;
 }
 
+/**
+ * @brief Bus::NameIt nastavenie mena
+ * @param streetName
+ */
 void Bus::NameIt( QString streetName ){
     this->name = streetName;
 }
-
+/**
+ * @brief Bus::IdIt nastavenie id
+ * @param ID
+ */
 void Bus::IdIt( QString ID ){
     this->id = ID;
 }
 
+/**
+ * @brief Bus::GetPossition Vrati poziciu zaciatocnej stanice autobusu
+ * @return Vracia objekt typu QPointF
+ */
 QPointF Bus::GetPossition(){
     QPointF start;
     start.rx() =  route[ 0 ]->GetStreetStart().GetX() -2.5 ;
@@ -60,11 +100,18 @@ QPointF Bus::GetPossition(){
     return start;
 }
 
+/**
+ * @brief Bus::setBus Nastavi polohu autobusu na mape
+ */
 void Bus::setBus(){
     nextPos();
     this->onmap = true;
 }
 
+/**
+ * @brief Bus::getPos Vrati aktualnu polohu autobusu
+ * @return Vracia objekt typu QPointF
+ */
 QPointF Bus::getPos(){
     QPointF x;
     x.rx() = this->posX - 2.5;
@@ -134,7 +181,7 @@ void Bus::countAdditions( float sx, float sy, float ex, float ey ){
             departure = plannedStops[ 0 ][ 1 ];
             setNul();
         } else {
-            departure = plannedStops[ now + 1 ][ 1 ];
+                    departure = plannedStops[ now + 1 ][ 1 ];
         }
     } else if ( sx <= ex ){
         if( sy <= ey ){
@@ -173,6 +220,10 @@ void Bus::countAdditions( float sx, float sy, float ex, float ey ){
 
 }
 
+/**
+ * @brief Bus::countDistanceToStop
+ * @return  vrati vzdialenost do zastavky/najblizsieho zastavenia
+ */
 float Bus::countDistanceToStop(){
     float length = 0;
     for( int i = currenti - 1; i < route.size(); i++ ){
@@ -189,6 +240,10 @@ float Bus::countDistanceToStop(){
     return length;
 }
 
+/**
+ * @brief Bus::timeToNext
+ * @return Vrati cas do dalsieho pohybu autobusu
+ */
 int Bus::timeToNext(){
 
     int firstStopMin = plannedStops[ now ][ 1 ].left( 2 ).toInt();
@@ -209,9 +264,13 @@ int Bus::timeToNext(){
     }
 
 
+
     return secondsToStop;
 }
 
+/**
+ * @brief Bus::nextPos Zisti nasledujucu polohu autobusu
+ */
 void Bus::nextPos(){
 
     if( changeStop ){
@@ -255,14 +314,26 @@ void Bus::nextPos(){
 
 }
 
+/**
+ * @brief Bus::getId Vrati ID
+ * @return
+ */
 QString Bus::getId(){
     return this->id;
 }
 
+/**
+ * @brief Bus::getName Vrati meno
+ * @return
+ */
 QString Bus::getName(){
     return this->name;
 }
 
+/**
+ * @brief Bus::getMiddle Vrati stred
+ * @return Vrati objekt typu QPointF
+ */
 QPointF Bus::getMiddle(){
     QPointF ret;
     ret.rx() = current->GetMiddle()->GetX() - 2.5;
@@ -272,19 +343,34 @@ QPointF Bus::getMiddle(){
     return ret;
 }
 
+/**
+ * @brief Bus::setStart Nastavi cas vyjazdu
+ * @param time Cas zaciatku
+ */
 void Bus::setStart( QString time ){
     this->start = time;
 }
 
+/**
+ * @brief Bus::getStart
+ * @return Vrati cas vyjazdu
+ */
 QString Bus::getStart(){
     return this->start;
 }
 
+/**
+ * @brief Bus::mousePressEvent
+ * @param event
+ */
 void Bus::mousePressEvent( QGraphicsSceneMouseEvent *event )
 {
     qDebug() << startTime;
 }
 
+/**
+ * @brief Bus::getStops
+ */
 void Bus::getStops(){
 
     for( int i = 0; i < route.size(); i++ ){
@@ -303,6 +389,11 @@ void Bus::getStops(){
 
 }
 
+/**
+ * @brief Bus::countStreetLenght Vypocita a vrati dlzku cesty
+ * @param street Pointer na objekt cesty
+ * @return Vrati dlzku cesty
+ */
 float Bus::countStreetLenght( Street *street ){
     float sx = street->GetStreetStart().GetX();
     float sy = street->GetStreetStart().GetY();
