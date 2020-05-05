@@ -49,13 +49,38 @@ private:
     bool depart( Bus* bus );
 
 private slots:
+
+    /**
+     * @brief zoom Zvacsovanie mapy
+     * @param x Zvacsenie
+     */
     void zoom( int x );
     void get_time();
+
+    /**
+     * @brief speed Nastavnie rychlosti simulacie
+     * @param x Zrychlenie
+     */
     void speed( int x );
+
+    /**
+     * @brief MainWindow::BusMovement Vykreslovanie autobusu, pohyb autobusu
+     */
     void BusMovement();
 
 public:
+
+    /**
+     * @brief MainWindow::initScene Vykreslenie mapy
+     * @param streets
+     * @param bussesHash
+     * @param linkHash
+     */
     void initScene( QMap<QString, Street*> streets, QMap<QString, QMap<QString, Bus*>> busses, QMap<QString, line*> lines );
+
+    /**
+     * @brief MainWindow::spawnBus Pridanie autobusu do mapy na zaciatocnu zastavku
+     */
     void spawnBus();
     Ui::MainWindow *ui;
     MainWindow(QWidget *parent = nullptr);

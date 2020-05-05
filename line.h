@@ -17,9 +17,31 @@ public:
 
 public:
     line();
+
+    /**
+     * @brief line::setId
+     * @param identif ID spoja
+     */
     void setId( QString identif );
+
+    /**
+     * @brief line::setReps
+     * @param repeats Pocet opakovani
+     */
     void setReps( QString repeats );
+
+    /**
+     * @brief line::fillMap
+     * @param id ID autobusu
+     * @param stoptime Cas odchodu mhd
+     */
     void fillMap( QString id, QVector<QVector<QString>> stoptime );
+
+    /**
+     * @brief line::getStoptInfo
+     * @param identif ID spoja
+     * @return Vracia
+     */
     QVector<QVector<QString>> getStoptInfo( QString identif );
 };
 
