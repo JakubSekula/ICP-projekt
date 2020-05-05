@@ -18,7 +18,6 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     bus.cpp \
     coordinate.cpp \
-    dialog.cpp \
     line.cpp \
     main.cpp \
     mainwindow.cpp \
@@ -29,7 +28,6 @@ SOURCES += \
 HEADERS += \
     bus.h \
     coordinate.h \
-    dialog.h \
     line.h \
     mainwindow.h \
     readcsv.h \
@@ -37,7 +35,6 @@ HEADERS += \
     street.h
 
 FORMS += \
-    dialog.ui \
     mainwindow.ui
 
 # Default rules for deployment.

@@ -11,10 +11,11 @@
 #include <QGraphicsSceneMouseEvent>
 #include <QGraphicsItem>
 #include <QPainter>
-#include "dialog.h"
+#include <QObject>
 
-class Bus : public QGraphicsItem
+class Bus : public QObject, public QGraphicsItem
 {
+    Q_OBJECT
 
 private:
     Street* current;
@@ -92,7 +93,7 @@ protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
 
 signals:
-    void valueChanged(int newValue);
+    void valueChangedd( QString startTime );
 };
 
 #endif // BUS_H

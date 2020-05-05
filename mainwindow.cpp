@@ -52,7 +52,7 @@ void MainWindow::initScene( QMap<QString, Street*> streets, QMap<QString, QMap<Q
 
     ui->graphicsView->setScene( scene );
 
-    ui->graphicsView->scale( 1.4, 1.4 );
+    ui->graphicsView->scale( 1.2, 1.2 );
 
     QMap<QString, Street*>::iterator i;
     for ( i = streets.begin(); i != streets.end(); ++i ){
@@ -90,6 +90,7 @@ void MainWindow::spawnBus(){
             QString sysTime = ui->lineEdit->text().right( 7 ).split( ' ', QString::SkipEmptyParts ).join( "" );
             QString myTime = bus->getStart();
             if( ( myTime == sysTime ) && ( bus->onmap == false ) ){
+                connect( bus, SIGNAL( valueChangedd( QString ) ), this, SLOT( testys( QString ) ) );
                 bus->startTime = sysTime;
                 scene->addItem( bus );
                 bus->setPos( bus->getMiddle() );
@@ -167,4 +168,8 @@ void MainWindow::BusMovement(){
         }
         o++;
     }
+}
+
+void MainWindow::testys( QString test ){
+    qDebug() << test;
 }
