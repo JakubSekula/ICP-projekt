@@ -87,6 +87,14 @@ public:
      */
     bool equals( Street* street );
 
+    /**
+     * @brief Street::equals Metoda pro zjisteni spravneho smeru jizdy.
+     * @param street1
+     * @param street2
+     * @return Vrati true jestlize se ma cestovat doleva. jinak false
+     */
+    bool WhichWay( Street* street1, Street* street2 );
+
 };
 
 

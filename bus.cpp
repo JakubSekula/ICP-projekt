@@ -292,10 +292,20 @@ void Bus::nextPos(){
 
     //qDebug() << step;
 
+    //qDebug() << currenti;
+
     if( currenti == 1 && !round ){
-        countAdditions( current->GetMiddle()->GetX(), current->GetMiddle()->GetY(), current->GetStreetEnd().GetX(), current->GetStreetEnd().GetY() );
+        if( current->WhichWay( current, route[ currenti ] ) ){
+            countAdditions( current->GetMiddle()->GetX(), current->GetMiddle()->GetY(), current->GetStreetStart().GetX(), current->GetStreetStart().GetY() );
+        } else {
+            countAdditions( current->GetMiddle()->GetX(), current->GetMiddle()->GetY(), current->GetStreetEnd().GetX(), current->GetStreetEnd().GetY() );
+        }
     } else if( currenti == 1 && round ){
-        countAdditions( current->GetStreetStart().GetX(), current->GetStreetStart().GetY(), current->GetStreetEnd().GetX(), current->GetStreetEnd().GetY() );
+        if( current->WhichWay( current, route[ currenti ] ) ){
+            countAdditions( current->GetStreetEnd().GetX(), current->GetStreetEnd().GetY(), current->GetStreetStart().GetX(), current->GetStreetStart().GetY() );
+        } else {
+            countAdditions( current->GetStreetStart().GetX(), current->GetStreetStart().GetY(), current->GetStreetEnd().GetX(), current->GetStreetEnd().GetY() );
+        }
     } else {
         if( current->GetStreetEnd().GetX() == route[ currenti - 2 ]->GetStreetEnd().GetX() && current->GetStreetEnd().GetY() == route[ currenti - 2 ]->GetStreetEnd().GetY() ){
             countAdditions( current->GetStreetEnd().GetX(), current->GetStreetEnd().GetY(), current->GetStreetStart().GetX(), current->GetStreetStart().GetY() );

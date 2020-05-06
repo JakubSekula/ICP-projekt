@@ -127,13 +127,29 @@ coordinate* Street::GetMiddle(){
  * @param street
  * @return Vrati true ak sa cesty rovnaju. inak false
  */
-bool Street::equals(Street *street){
+bool Street::equals(Street* street){
     if( ( this->GetStreetEnd().GetX() == street->GetStreetStart().GetX() && this->GetStreetEnd().GetY() == street->GetStreetStart().GetY() ) ||
         ( this->GetStreetEnd().GetX() == street->GetStreetEnd().GetX() && this->GetStreetEnd().GetY() == street->GetStreetEnd().GetY() )){
         return true;
     } else if( ( this->GetStreetStart().GetX() == street->GetStreetEnd().GetX() && this->GetStreetStart().GetY() == street->GetStreetEnd().GetY() ) ||
                ( this->GetStreetStart().GetX() == street->GetStreetStart().GetX() && this->GetStreetStart().GetY() == street->GetStreetStart().GetY() ) ) {
+        return true;
+    } else {
+        return false;
+    }
+}
 
+bool Street::WhichWay( Street* street1, Street* street2 ){
+
+    qDebug() << street1->GetStreetStart().GetX();
+    qDebug() << street1->GetStreetStart().GetY();
+    qDebug() << street2->GetStreetEnd().GetX();
+    qDebug() << street2->GetStreetEnd().GetY();
+
+    if( street1->GetStreetStart().GetX() == street2->GetStreetStart().GetX() && street1->GetStreetStart().GetY() == street2->GetStreetStart().GetY() ){
+        return true;
+    } else if ( street1->GetStreetStart().GetX() == street2->GetStreetEnd().GetX() && street1->GetStreetStart().GetY() == street2->GetStreetEnd().GetY() ){
+        return true;
     } else {
         return false;
     }
