@@ -57,7 +57,7 @@ void MainWindow::zoom( int x ){
  */
 void MainWindow::initScene( QMap<QString, Street*> streets, QMap<QString, QMap<QString, Bus*>> bussesHash, QMap<QString, line*> linkHash ){
 
-    QPainter painter(this);
+//    QPainter painter(this);
 
     this->bussesHash = bussesHash;
     this->linkHash = linkHash;
@@ -93,7 +93,7 @@ void MainWindow::initScene( QMap<QString, Street*> streets, QMap<QString, QMap<Q
 
     }
 
-    ui->graphicsView->setRenderHint( painter.Antialiasing );
+    ui->graphicsView->setRenderHint( QPainter::Antialiasing );
 
 }
 
