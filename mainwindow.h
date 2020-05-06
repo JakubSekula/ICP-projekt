@@ -48,6 +48,8 @@ private:
     QTime lastTime;
     int jump;
     bool depart( Bus* bus );
+    QVector<QGraphicsLineItem*> pickedLines;
+    void clearPicked();
 
 private slots:
 
@@ -92,5 +94,7 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
     void test();
+
+
 };
 #endif // MAINWINDOW_H

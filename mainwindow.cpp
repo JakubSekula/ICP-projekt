@@ -169,6 +169,14 @@ bool MainWindow::depart( Bus* bus ){
     }
 }
 
+void MainWindow::clearPicked(){
+    for( int i = 0; i < pickedLines.size(); i++ ){
+        delete pickedLines[ i ];
+    }
+
+    pickedLines.clear();
+}
+
 /**
  * @brief MainWindow::BusMovement Vykreslovanie autobusu, pohyb autobusu
  */
@@ -189,13 +197,17 @@ void MainWindow::BusMovement(){
 }
 
 void MainWindow::BusSignal( QVector<QVector<QString>> stops, int currTime, QVector<Street*> route ){
+
+    clearPicked();
+
     QGraphicsScene* scene2 = new QGraphicsScene( ui->graphicsView_2 );
     ui->graphicsView_2->setScene( scene2 );
 
     int x = 0;
 
     for( int i = 0; i < route.size(); i++  ){
-        scene->addLine( route[ i ]->GetStreetStart().GetX(), route[ i ]->GetStreetStart().GetY(), route[ i ]->GetStreetEnd().GetX(), route[ i ]->GetStreetEnd().GetY(), QPen( Qt::blue, 3 ) );
+        QGraphicsLineItem* line = scene->addLine( route[ i ]->GetStreetStart().GetX(), route[ i ]->GetStreetStart().GetY(), route[ i ]->GetStreetEnd().GetX(), route[ i ]->GetStreetEnd().GetY(), QPen( Qt::blue, 3 ) );
+        pickedLines.push_back( line );
     }
 
     for( int i = 0; i < stops.size() - 1; i++ ){
