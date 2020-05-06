@@ -10,6 +10,7 @@
 #include "street.h"
 #include "line.h"
 #include "bus.h"
+#include "readcsv.h"
 #include <vector>
 #include <QTransform>
 #include "ui_mainwindow.h"
@@ -67,6 +68,10 @@ private slots:
      * @brief MainWindow::BusMovement Vykreslovanie autobusu, pohyb autobusu
      */
     void BusMovement();
+    /**
+     * @brief resetBtnChecked Funkcia pre talcidlo Reset
+     */
+    void resetBtnChecked();
     void BusSignal( QVector<QVector<QString>> stops, int currTime, QVector<Street*> route );
 
 public:

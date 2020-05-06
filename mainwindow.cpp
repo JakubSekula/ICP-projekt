@@ -16,13 +16,31 @@ MainWindow::MainWindow(QWidget *parent)
     timer->start( 1000 );
     lastTime = time;
     connect( timer, SIGNAL( timeout() ), this, SLOT( get_time() ) );
-
+    connect(ui->resetButton, SIGNAL(clicked()), this, SLOT(resetBtnChecked()));
 }
 
 
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::resetBtnChecked(){
+
+    QMap<QString, Street*> phony;
+    QMap<QString, line*> phonyl;
+    auto org = ui->graphicsView->transform();
+    auto* map = new readcsv( "newyork.csv", "Map", phony, phonyl );
+    QMap<QString, Street*> streets = map->GetMapHash();
+    auto* lined = new readcsv( "link.csv", "Line", streets, phonyl );
+    QMap<QString, line*> lines = lined->GetLineHash();
+    auto* bus = new readcsv( "Bus.csv", "Bus", streets, lines );
+    QMap<QString, QMap<QString, Bus*>> busses = bus->GetBusHash();
+    initScene( streets, busses, lines );
+    QTime time = QTime::fromString( "12:00:00" );
+    ui->lineEdit->setTime( time );
+    ui->graphicsView->setTransform(org);
+    ui->speeder->setValue(1);
 }
 
 void MainWindow::zoom( int x ){
