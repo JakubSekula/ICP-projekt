@@ -14,7 +14,9 @@
  * @param c1
  * @param c2
  */
-Street::Street( QString id, QString name, coordinate c1, coordinate c2 ){
+Street::Street( QString id, QString name, coordinate c1, coordinate c2 )
+    : QGraphicsLineItem( c1.GetX(), c1.GetY(), c2.GetX(), c2.GetY() ){
+    this->setPen( QPen( Qt::black, 1 ) );
     this->name = name;
     this->id = id;
     coordinates.push_back( c1 );
@@ -140,12 +142,6 @@ bool Street::equals(Street* street){
 }
 
 bool Street::WhichWay( Street* street1, Street* street2 ){
-
-    qDebug() << street1->GetStreetStart().GetX();
-    qDebug() << street1->GetStreetStart().GetY();
-    qDebug() << street2->GetStreetEnd().GetX();
-    qDebug() << street2->GetStreetEnd().GetY();
-
     if( street1->GetStreetStart().GetX() == street2->GetStreetStart().GetX() && street1->GetStreetStart().GetY() == street2->GetStreetStart().GetY() ){
         return true;
     } else if ( street1->GetStreetStart().GetX() == street2->GetStreetEnd().GetX() && street1->GetStreetStart().GetY() == street2->GetStreetEnd().GetY() ){
@@ -154,3 +150,8 @@ bool Street::WhichWay( Street* street1, Street* street2 ){
         return false;
     }
 }
+
+void Street::mousePressEvent( QGraphicsSceneMouseEvent *event ){
+    qDebug() << this->GetStreetID();
+}
+

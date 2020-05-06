@@ -75,9 +75,9 @@ void MainWindow::initScene( QMap<QString, Street*> streets, QMap<QString, QMap<Q
     QMap<QString, Street*>::iterator i;
     for ( i = streets.begin(); i != streets.end(); ++i ){
 
-        auto *line = scene->addLine( streets[ i.key() ]->GetStreetStart().GetX(), streets[ i.key() ]->GetStreetStart().GetY(), streets[ i.key() ]->GetStreetEnd().GetX(), streets[ i.key() ]->GetStreetEnd().GetY() );
+        //auto *line = scene->addLine( streets[ i.key() ]->GetStreetStart().GetX(), streets[ i.key() ]->GetStreetStart().GetY(), streets[ i.key() ]->GetStreetEnd().GetX(), streets[ i.key() ]->GetStreetEnd().GetY() );
 
-        line->setFlag( QGraphicsItem::ItemIsSelectable );
+        scene->addItem( streets[ i.key() ] );
 
         stop* s1 = streets[ i.key() ]->getStop();
 

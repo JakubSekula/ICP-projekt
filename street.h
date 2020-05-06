@@ -7,11 +7,12 @@
 #include <vector>
 #include <QString>
 #include "coordinate.h"
+#include <QGraphicsLineItem>
 #include "stop.h"
 
 using namespace::std;
 
-class Street{
+class Street : public QGraphicsLineItem{
 
 private:
     QString name;
@@ -19,6 +20,7 @@ private:
     vector<coordinate> coordinates;
     stop* s1 = NULL;
     coordinate* middle = NULL;
+    virtual void mousePressEvent(QGraphicsSceneMouseEvent* event) override;
 
 public:
 
