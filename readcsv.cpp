@@ -26,10 +26,6 @@ QMap<QString, line*> readcsv::GetLineHash(){
     return this->lineHash;
 }
 
-/**
- * @brief readcsv::LoadMap precitanie .csv suboru a nacitanie hodnot
- * @param filecsv .csv subor na citanie
- */
 void readcsv::LoadMap( QString filecsv ){
 
     QFile file( filecsv );
@@ -63,10 +59,6 @@ void readcsv::LoadMap( QString filecsv ){
 
 }
 
-/**
- * @brief readcsv::LoadBus precitanie .csv suboru a nacitanie hodnot
- * @param filecsv .csv subor na citanie
- */
 void readcsv::LoadBus( QString filecsv, QMap<QString, Street*> hashStreet, QMap<QString, line*> lines ){
 
     QFile file( filecsv );
@@ -146,10 +138,6 @@ void readcsv::LoadBus( QString filecsv, QMap<QString, Street*> hashStreet, QMap<
     }
 }
 
-/**
- * @brief readcsv::LoadLine precitanie .csv suboru a nacitanie hodnot
- * @param filecsv .csv subor na citanie
- */
 void readcsv::LoadLine( QString filecsv ){
     QFile file( filecsv );
         if ( !file.open( QIODevice::ReadOnly | QIODevice::Text ) )
@@ -195,13 +183,6 @@ void readcsv::LoadLine( QString filecsv ){
     }
 }
 
-/**
- * @brief readcsv::getTimeDiff Vypocitanie odchodu
- * @param time
- * @param reps
- * @param iter
- * @return Vrati odchod autobusu
- */
 QString readcsv::getTimeDiff( QString time, int reps, int iter ){
     int minutes = time.left(2).toInt();
     int another_departure = ( int ) 60/reps;

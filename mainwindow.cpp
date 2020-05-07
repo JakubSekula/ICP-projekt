@@ -56,12 +56,6 @@ void MainWindow::zoom( int x ){
     ui->graphicsView->setTransform( QTransform( scale, org.m12(), org.m21(), scale, org.dx(), org.dy()));
 }
 
-/**
- * @brief MainWindow::initScene Vykreslenie mapy
- * @param streets
- * @param bussesHash
- * @param linkHash
- */
 void MainWindow::initScene( QMap<QString, Street*> streets, QMap<QString, QMap<QString, Bus*>> bussesHash, QMap<QString, line*> linkHash ){
 
 //    QPainter painter(this);
@@ -83,7 +77,7 @@ void MainWindow::initScene( QMap<QString, Street*> streets, QMap<QString, QMap<Q
     for ( i = streets.begin(); i != streets.end(); ++i ){
 
         //auto *line = scene->addLine( streets[ i.key() ]->GetStreetStart().GetX(), streets[ i.key() ]->GetStreetStart().GetY(), streets[ i.key() ]->GetStreetEnd().GetX(), streets[ i.key() ]->GetStreetEnd().GetY() );
-
+//        streets[ i.key() ]->setPen(QPen(Qt::green));
         scene->addItem( streets[ i.key() ] );
 
         stop* s1 = streets[ i.key() ]->getStop();
@@ -104,9 +98,6 @@ void MainWindow::initScene( QMap<QString, Street*> streets, QMap<QString, QMap<Q
 
 }
 
-/**
- * @brief MainWindow::spawnBus Pridanie autobusu do mapy na zaciatocnu zastavku
- */
 void MainWindow::spawnBus(){
 
     QMap<QString, QMap<QString,Bus*>>::iterator test;
@@ -184,9 +175,6 @@ void MainWindow::clearPicked(){
     pickedLines.clear();
 }
 
-/**
- * @brief MainWindow::BusMovement Vykreslovanie autobusu, pohyb autobusu
- */
 void MainWindow::BusMovement(){
     int o = 0;
     while( o < jump ){
