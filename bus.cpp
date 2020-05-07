@@ -125,6 +125,7 @@ void Bus::countAdditions( float sx, float sy, float ex, float ey ){
     if( ( ( streetLength > hypotenuse / 2 ) && ( streetLength - step < hypotenuse / 2 ) ) && ( current->getStop() ) && stopAtStop ){
         this->posX = current->GetMiddle()->GetX();
         this->posY = current->GetMiddle()->GetY();
+
         changeStop = true;
         stopAtStop = false;
         stationary = true;
@@ -132,9 +133,11 @@ void Bus::countAdditions( float sx, float sy, float ex, float ey ){
         if( now == plannedStops.size() - 2 ){
             now = -1;
             departure = plannedStops[ 0 ][ 1 ];
+            delay = 0;
+            set = false;
             setNul();
         } else {
-                    departure = plannedStops[ now + 1 ][ 1 ];
+            departure = plannedStops[ now + 1 ][ 1 ];
         }
     } else if ( sx <= ex ){
         if( sy <= ey ){
@@ -155,14 +158,18 @@ void Bus::countAdditions( float sx, float sy, float ex, float ey ){
     }
 
     if( newStreet && route.size() - 1 != currenti ){
+        current->changeable = true;
         current = route[ currenti ];
         currenti++;
+        set = false;
         stopAtStop = true;
         useRest = true;
         halflength = false;
         streetLength = 0;
     } else if ( newStreet && route.size() - 1 == currenti ){
         currenti = 1;
+        current->changeable = true;
+        set = false;
         current = route[ currenti - 1 ];
         stopAtStop = true;
         useRest = true;
@@ -224,11 +231,23 @@ void Bus::nextPos(){
         changeStop = false;
     }
 
+    current->changeable = false;
+    //qDebug() << current->color;
+    if( current->color == 2 && set == false ){
+        delay = delay + 5;
+        set = true;
+        current->delay = 5;
+    } else if ( current->color == 3 && set == false ){
+        delay = delay + 15;
+        set = true;
+        current->delay = 15;
+    }
+
     step = length / ( int ) length;
 
     int timeTo = timeToNext();
 
-    step = ( length * step ) / ( timeTo - 3 );
+    step = ( length * step ) / ( timeTo - 3 + current->delay );
 
     departure = plannedStops[ now ][ 1 ];
 
@@ -291,7 +310,7 @@ QString Bus::getStart(){
     return this->start;
 }
 
-void Bus::mousePressEvent( QGraphicsSceneMouseEvent *event )
+void Bus::mousePressEvent( QGraphicsSceneMouseEvent* event )
 {
     emit valueChangedd( plannedStops, now, route, stationary );
 }

@@ -30,6 +30,7 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 private:
+    int convertDelay( int delay );
     QTimer *timer;
     int multiple = 1;
     QGraphicsItem* elipsa{ nullptr };
@@ -94,7 +95,6 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
     void test();
-
 
 protected:
     /**

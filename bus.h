@@ -18,6 +18,7 @@ class Bus : public QObject, public QGraphicsItem
     Q_OBJECT
 
 private:
+    bool set = false;
     Street* current;
     int currenti;
     int currentStops = 0;

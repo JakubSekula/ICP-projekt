@@ -8,6 +8,7 @@
 #include <QString>
 #include "coordinate.h"
 #include <QGraphicsLineItem>
+#include <QGraphicsSceneMouseEvent>
 #include "stop.h"
 
 using namespace::std;
@@ -25,7 +26,8 @@ private:
 
 public:
     int color;
-    bool changeable;
+    bool changeable = true;
+    int delay = 0;
     /**
      * @brief Street::Street Konstruktor. Naastavenie cesty
      * @param id

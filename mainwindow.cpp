@@ -121,16 +121,44 @@ void MainWindow::spawnBus(){
 void MainWindow::get_time(){
     QTime time = QTime::fromString( ui->lineEdit->text(), "hh : mm : ss" );
     spawnBus();
+    time = time.addSecs( 1 );
+    ui->lineEdit->setTime( time );
     jump = ( time.msecsTo(lastTime) / 1000 ) * -1;
     lastTime = time;
     BusMovement();
-    time = time.addSecs( 1 );
-    ui->lineEdit->setTime( time );
 }
 
 void MainWindow::speed( int x ){
     timer->stop();
     timer->start( 1000/x );
+}
+
+int MainWindow::convertDelay( int delay ){
+    QString minutes = QString::number( ( float ) delay / 60 );
+    QString seconds;
+
+    QStringList pieces = minutes.split( "." );
+
+
+    float sec;
+
+    if( pieces.size() == 2 ){
+        pieces[ 1 ] = "0." + pieces[ 1 ];
+        minutes = pieces[ 0 ];
+        seconds = pieces[ 1 ];
+        sec = seconds.toFloat() * 60;
+    } else {
+        sec = 0;
+    }
+
+    if( minutes.toInt() != 0 ){
+        minutes = QString::number( minutes.toInt() * 10 ) + QString::number( qRound( sec ) );
+        return minutes.toInt();
+    }
+
+    return delay;
+
+    qDebug() << minutes << delay;
 }
 
 bool MainWindow::depart( Bus* bus ){
@@ -153,8 +181,8 @@ bool MainWindow::depart( Bus* bus ){
     if( bus->enRoute == false ){
     return false;
     }
-    //qDebug() << timerTime << busDep;
-    if( timerTime < busDep + bus->delay && bus->stationary ){
+
+    if( timerTime < busDep + convertDelay( bus->delay ) && bus->stationary ){
         return false;
     } else {
         if( bus->atEnd == false ){

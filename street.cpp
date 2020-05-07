@@ -152,8 +152,8 @@ bool Street::WhichWay( Street* street1, Street* street2 ){
     }
 }
 
-void Street::mousePressEvent( QGraphicsSceneMouseEvent *event ){
-    qDebug() << this->GetStreetID();
+void Street::mousePressEvent( QGraphicsSceneMouseEvent* event ){
+
     QPen pen = this->pen();
     QColor col = pen.color();
     if(col == QColor(99, 214, 104) && changeable){
@@ -164,7 +164,7 @@ void Street::mousePressEvent( QGraphicsSceneMouseEvent *event ){
         this->setPen(QColor(242, 60, 50));
         this->color = 3;
     }
-    else if(col == QColor(242, 60, 50 && changeable)){
+    else if(col == QColor(242, 60, 50) && changeable){
         this->setPen(QColor(99, 214, 104));
         this->color = 1;
     }
