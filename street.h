@@ -15,6 +15,7 @@ using namespace::std;
 class Street : public QGraphicsLineItem{
 
 private:
+
     QString name;
     QString id;
     vector<coordinate> coordinates;
@@ -23,7 +24,8 @@ private:
     virtual void mousePressEvent(QGraphicsSceneMouseEvent* event) override;
 
 public:
-
+    int color;
+    bool changeable;
     /**
      * @brief Street::Street Konstruktor. Naastavenie cesty
      * @param id
