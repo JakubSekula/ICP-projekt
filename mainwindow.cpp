@@ -106,7 +106,7 @@ void MainWindow::spawnBus(){
             QString sysTime = ui->lineEdit->text().right( 7 ).split( ' ', QString::SkipEmptyParts ).join( "" );
             QString myTime = bus->getStart();
             if( ( myTime == sysTime ) && ( bus->onmap == false ) ){
-                connect( bus, SIGNAL( valueChangedd( QVector<QVector<QString>>, int, QVector<Street*> ) ), this, SLOT( BusSignal( QVector<QVector<QString>>, int, QVector<Street*> ) ) );
+                connect( bus, SIGNAL( valueChangedd( QVector<QVector<QString>>, int, QVector<Street*>, bool ) ), this, SLOT( BusSignal( QVector<QVector<QString>>, int, QVector<Street*>, bool ) ) );
                 bus->startTime = sysTime;
                 scene->addItem( bus );
                 bus->setPos( bus->getMiddle() );
@@ -191,7 +191,7 @@ void MainWindow::BusMovement(){
     }
 }
 
-void MainWindow::BusSignal( QVector<QVector<QString>> stops, int currTime, QVector<Street*> route ){
+void MainWindow::BusSignal( QVector<QVector<QString>> stops, int currTime, QVector<Street*> route, bool inStation ){
 
     clearPicked();
 
@@ -206,24 +206,6 @@ void MainWindow::BusSignal( QVector<QVector<QString>> stops, int currTime, QVect
     }
 
     for( int i = 0; i < stops.size() - 1; i++ ){
-        if( i < stops.size() - 2 ){
-            scene2->addLine( x, 0, x + 70, 0, QPen( Qt::black, 1 ) );
-        }
-
-        if( currTime == i && i < stops.size() - 2 ){
-            scene2->addEllipse( x + 35 , 0 - 2.5, 5, 5, QPen( Qt::red, 5 ) );
-        } else if ( i == stops.size() - 2 && currTime == i ){
-            QGraphicsTextItem* busEnd = scene2->addText( "bus heading to end station" );
-            busEnd->setDefaultTextColor( Qt::red );
-            busEnd->setPos( x + 35, -10 );
-        }
-
-        x = x + 70;
-    }
-
-    x = 0;
-
-    for( int i = 0; i < stops.size() - 1; i++ ){
         scene2->addEllipse( x , 0 - 2.5, 5, 5, QPen( Qt::blue, 5 ) );
 
         QGraphicsTextItem* textDepTime = scene2->addText( stops[ i ][ 1 ] );
@@ -236,5 +218,30 @@ void MainWindow::BusSignal( QVector<QVector<QString>> stops, int currTime, QVect
 
         x = x + 70;
     }
+
+    x = 0;
+
+    for( int i = 0; i < stops.size() - 1; i++ ){
+        if( i < stops.size() - 2 ){
+            scene2->addLine( x, 0, x + 70, 0, QPen( Qt::black, 1 ) );
+        }
+
+        if( currTime == - 1 ){
+            scene2->addEllipse( 0, 0 - 2.5, 5, 5, QPen( Qt::red, 5 ) );
+        }
+
+        if( currTime == i && i < stops.size() - 2 && inStation == false ){
+            scene2->addEllipse( x + 35 , 0 - 2.5, 5, 5, QPen( Qt::red, 5 ) );
+        } else if ( currTime == i && i < stops.size() - 2 && inStation ){
+            scene2->addEllipse( x + 70, 0 - 2.5, 5, 5, QPen( Qt::red, 5 ) );
+        } else if ( i == stops.size() - 2 && currTime == i ){
+            QGraphicsTextItem* busEnd = scene2->addText( "bus heading to end station" );
+            busEnd->setDefaultTextColor( Qt::red );
+            busEnd->setPos( x + 35, -10 );
+        }
+
+        x = x + 70;
+    }
+
 
 }
