@@ -74,7 +74,7 @@ private slots:
      * @brief resetBtnChecked Funkcia pre talcidlo Reset
      */
     void resetBtnChecked();
-    void BusSignal( QVector<QVector<QString>> stops, int currTime, QVector<Street*> route );
+    void BusSignal( QVector<QVector<QString>> stops, int currTime, QVector<Street*> route, bool inStation );
 
 public:
 

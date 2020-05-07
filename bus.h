@@ -211,7 +211,7 @@ protected:
     void mousePressEvent( QGraphicsSceneMouseEvent *event ) override;
 
 signals:
-    void valueChangedd( QVector<QVector<QString>> stops, int currentPos, QVector<Street*> route );
+    void valueChangedd( QVector<QVector<QString>> stops, int currentPos, QVector<Street*> route, bool stationary );
 };
 
 #endif // BUS_H
