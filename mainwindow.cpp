@@ -25,6 +25,12 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+void MainWindow::mousePressEvent(QMouseEvent *event)
+{
+    clearPicked();
+    ui->graphicsView_2->setScene(new QGraphicsScene( ui->graphicsView_2 ));
+}
+
 void MainWindow::resetBtnChecked(){
 
     QMap<QString, Street*> phony;
@@ -41,6 +47,7 @@ void MainWindow::resetBtnChecked(){
     ui->lineEdit->setTime( time );
     ui->graphicsView->setTransform(org);
     ui->speeder->setValue(1);
+    ui->graphicsView_2->setScene(new QGraphicsScene( ui->graphicsView_2 ));
 }
 
 void MainWindow::zoom( int x ){

@@ -96,5 +96,11 @@ public:
     void test();
 
 
+protected:
+    /**
+     * @brief mousePressEvent Funkcia pre zachytenie kliku mimo mapy
+     * @param event
+     */
+    void mousePressEvent(QMouseEvent *event);
 };
 #endif // MAINWINDOW_H
