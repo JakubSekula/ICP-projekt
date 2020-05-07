@@ -69,6 +69,7 @@ private:
     int timeToNext();
 
 public:
+    int delay = 0;
     bool enRoute = false;
     bool stationary = false;
     bool newRound = false;

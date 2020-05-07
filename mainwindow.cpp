@@ -76,8 +76,6 @@ void MainWindow::initScene( QMap<QString, Street*> streets, QMap<QString, QMap<Q
     QMap<QString, Street*>::iterator i;
     for ( i = streets.begin(); i != streets.end(); ++i ){
 
-        //auto *line = scene->addLine( streets[ i.key() ]->GetStreetStart().GetX(), streets[ i.key() ]->GetStreetStart().GetY(), streets[ i.key() ]->GetStreetEnd().GetX(), streets[ i.key() ]->GetStreetEnd().GetY() );
-//        streets[ i.key() ]->setPen(QPen(Qt::green));
         scene->addItem( streets[ i.key() ] );
 
         stop* s1 = streets[ i.key() ]->getStop();
@@ -156,7 +154,7 @@ bool MainWindow::depart( Bus* bus ){
     return false;
     }
     //qDebug() << timerTime << busDep;
-    if( timerTime < busDep && bus->stationary ){
+    if( timerTime < busDep + bus->delay && bus->stationary ){
         return false;
     } else {
         if( bus->atEnd == false ){
