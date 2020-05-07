@@ -17,6 +17,7 @@
 Street::Street( QString id, QString name, coordinate c1, coordinate c2 )
     : QGraphicsLineItem( c1.GetX(), c1.GetY(), c2.GetX(), c2.GetY() ){
     this->setPen( QPen( QColor(99, 214, 104), 1 ) );
+    this->color = 1;
     this->name = name;
     this->id = id;
     coordinates.push_back( c1 );
@@ -155,9 +156,18 @@ void Street::mousePressEvent( QGraphicsSceneMouseEvent *event ){
     qDebug() << this->GetStreetID();
     QPen pen = this->pen();
     QColor col = pen.color();
-    if(col == QColor(99, 214, 104)) this->setPen(QPen(QColor(255, 151, 77)));
-    else if(col == QColor(255, 151, 77)) this->setPen(QColor(242, 60, 50));
-    else if(col == QColor(242, 60, 50)) this->setPen(QColor(99, 214, 104));
+    if(col == QColor(99, 214, 104) && changeable){
+       this->setPen(QPen(QColor(255, 151, 77)));
+        this->color = 2;
+    }
+    else if(col == QColor(255, 151, 77) && changeable){
+        this->setPen(QColor(242, 60, 50));
+        this->color = 3;
+    }
+    else if(col == QColor(242, 60, 50 && changeable)){
+        this->setPen(QColor(99, 214, 104));
+        this->color = 1;
+    }
 
 }
 
