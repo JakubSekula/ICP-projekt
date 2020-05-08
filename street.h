@@ -22,6 +22,10 @@ private:
     vector<coordinate> coordinates;
     stop* s1 = NULL;
     coordinate* middle = NULL;
+    /**
+     * @brief mousePressEvent Metoda zavolana pri kliknuti na cestu. Stara sa o zafarbenie ciest a vytvara signal pre oznacovanie ciest na obchadzku.
+     * @param event
+     */
     virtual void mousePressEvent(QGraphicsSceneMouseEvent* event) override;
 
 public:
@@ -94,14 +98,24 @@ public:
     bool equals( Street* street );
 
     /**
-     * @brief Street::equals Metoda pro zjisteni spravneho smeru jizdy.
+     * @brief Street::WhichWay Metoda pro zjisteni spravneho smeru jizdy.
      * @param street1
      * @param street2
      * @return Vrati true jestlize se ma cestovat doleva. jinak false
      */
     bool WhichWay( Street* street1, Street* street2 );
 signals:
+    /**
+     * @brief isBlack Signal pri oznacovani uzavratych tras a obchadzky
+     * @param middle Stred cesty
+     * @param s Cesta
+     */
     void isBlack(coordinate* middle, Street* s);
+
+    /**
+     * @brief setBackColor Signal pri ruseni cesty pre obchadzku
+     * @param s Cesta
+     */
     void setBackColor(Street* s);
 };
 

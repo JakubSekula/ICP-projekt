@@ -74,12 +74,24 @@ private slots:
      */
     void BusMovement();
     /**
-     * @brief resetBtnChecked Funkcia pre talcidlo Reset
+     * @brief resetBtnChecked Funkcia pre tlacidlo Reset. Zresetuje mapu a vsetko da do povodneho stavu.
      */
     void resetBtnChecked();
+    /**
+     * @brief linkBtnChecked Funkcia pre tlacidlo na zmenu trasy.
+     */
     void linkBtnChecked();
     void BusSignal( QVector<QVector<QString>> stops, int currTime, QVector<Street*> route, bool inStation );
+    /**
+     * @brief drawCross Funkcia pre zmeny farby cesty a vykreslenie krizu na uzvretu cestu.
+     * @param middle Stred oznacenej cesty
+     * @param s Cesta
+     */
     void drawCross(coordinate* middle, Street *s);
+    /**
+     * @brief backColor Funkcia pre zrusenie oznacenia cesty pre obchadzku.
+     * @param s Cesta
+     */
     void backColor(Street* s);
 
 public:

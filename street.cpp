@@ -171,10 +171,11 @@ void Street::mousePressEvent( QGraphicsSceneMouseEvent* event ){
         }
     }
     else if (changeable){
-        if(col == QColor(180,180,180) || col == QColor(0,170,240)){
+        if(col == QColor(0,170,240)){
            emit setBackColor(this);
         }
         else{
+            CountMiddle(GetStreetStart(), GetStreetEnd());
             emit isBlack(GetMiddle(), this);
         }
     }

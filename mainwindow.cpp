@@ -56,9 +56,9 @@ void MainWindow::linkBtnChecked(){
     if(changingLink){
         changingLink = false;
         ui->linkButton->setText("Zmena trasy");
-        for(Street* value: alternateRoute){
-            qDebug()<<value->GetStreetID();
-        }
+//        for(Street* value: alternateRoute){
+//            qDebug()<<value->GetStreetID();
+//        }
     }
     else{
         changingLink = true;
@@ -76,9 +76,9 @@ void MainWindow::drawCross(coordinate* middle, Street* s){
     if(changingLink){
         if(alternateRoute.size() == 0){
             s->setPen(QPen(QColor(180,180,180), 1.5));
-//            QLineF line;
-//            line.setLine(middle->GetX()-5,middle->GetY()+5,middle->GetX()-5,middle->GetY()+5);
-//            scene->addLine(line);
+
+            scene->addLine(middle->GetX()-2,middle->GetY()-2,middle->GetX()+2,middle->GetY()+2, QPen(Qt::red, 1));
+            scene->addLine(middle->GetX()-2,middle->GetY()+2,middle->GetX()+2,middle->GetY()-2, QPen(Qt::red, 1));
         }
         else{
             s->setPen(QPen(QColor(0,170,240), 1.5));
