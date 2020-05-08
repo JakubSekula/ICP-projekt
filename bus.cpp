@@ -220,6 +220,10 @@ int Bus::timeToNext(){
     return secondsToStop;
 }
 
+void Bus::clearRoute(){
+    route.clear();
+}
+
 void Bus::nextPos(){
 
     if( changeStop ){

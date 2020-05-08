@@ -30,6 +30,7 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 private:
+    void alternateRouteFunc();
     int convertDelay( int delay );
     QTimer *timer;
     int multiple = 1;
@@ -52,7 +53,6 @@ private:
     QVector<QGraphicsLineItem*> pickedLines;
     void clearPicked();
     bool changingLink = false;
-    QVector<Street*> alternateRoute;
 
 private slots:
 
@@ -108,6 +108,8 @@ public:
      * @brief MainWindow::spawnBus Pridanie autobusu do mapy na zaciatocnu zastavku
      */
     void spawnBus();
+    QVector<Street*> alternateRoute;
+    void replaceRoute();
     Ui::MainWindow *ui;
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();

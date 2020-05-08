@@ -23,7 +23,6 @@ private:
     int currenti;
     int currentStops = 0;
     QMap<QString, Street*> streets;
-    QVector<Street*> route;
     QString name;
     QString id;
     float posX;
@@ -70,6 +69,8 @@ private:
     int timeToNext();
 
 public:
+    QVector<Street*> route;
+    void clearRoute();
     int delay = 0;
     bool enRoute = false;
     bool stationary = false;

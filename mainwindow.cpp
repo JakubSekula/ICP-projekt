@@ -52,13 +52,78 @@ void MainWindow::resetBtnChecked(){
     ui->verticalSlider->setValue(15);
 }
 
+void MainWindow::replaceRoute(){
+    int i = 0;
+
+    QVector<Street*> newRoute;
+    QVector<QVector<QString>> newStreets;
+
+    for( Bus* bus : busses ){
+        if( i != 0 ){
+            QVector<Street*> streets = bus->getRoute();
+            int str = 0;
+            bus->clearRoute();
+            for( Street* street : streets ){
+                if( street->GetStreetID() == alternateRoute.first()->GetStreetID() ){
+                    for( int i = 0; i < bus->plannedStops.size(); i++ ){
+                        if( bus->plannedStops[ i ][ 0 ] == street->GetStreetID() ){
+                            //qDebug() << bus->plannedStops[ i ];
+                        } else {
+                            newStreets.push_back( bus->plannedStops[ i ] );
+                        }
+                    }
+                    bus->plannedStops.clear();
+                    bus->plannedStops = newStreets;
+                    newStreets.clear();
+                    //qDebug() << "nasel jsem na indexu: " << str << streets[ str ]->GetStreetID();
+                    int replacement = 0;
+                    for( Street* streetReplace : alternateRoute ){
+                        if( replacement != 0 ){
+                            newRoute.push_back( streetReplace );
+                        }
+                        replacement++;
+                    }
+                } else {
+                    newRoute.push_back( street );
+                }
+                str++;
+            }
+            bus->clearRoute();
+            bus->route = newRoute;
+            newRoute.clear();
+        }
+        i++;
+    }
+}
+
+void MainWindow::alternateRouteFunc(){
+        int i = 0;
+        Street* current;
+        for( Street* street : alternateRoute ){
+
+            if( i != 0 ){
+                if( current->equals( street ) ){
+                    //qDebug() << "OK" << current->GetStreetID() << street->GetStreetID();
+                } else {
+                    //qDebug() << "nenavazuji" << current->GetStreetID() << street->GetStreetID();
+                    exit( 56 );
+                }
+            }
+
+            current = street;
+            i++;
+        }
+
+        replaceRoute();
+
+        alternateRoute.clear();
+}
+
 void MainWindow::linkBtnChecked(){
     if(changingLink){
         changingLink = false;
         ui->linkButton->setText("Zmena trasy");
-//        for(Street* value: alternateRoute){
-//            qDebug()<<value->GetStreetID();
-//        }
+        alternateRouteFunc();
     }
     else{
         changingLink = true;
