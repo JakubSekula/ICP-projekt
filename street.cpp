@@ -16,7 +16,7 @@
  */
 Street::Street( QString id, QString name, coordinate c1, coordinate c2 )
     : QGraphicsLineItem( c1.GetX(), c1.GetY(), c2.GetX(), c2.GetY() ){
-    this->setPen( QPen( QColor(99, 214, 104), 1 ) );
+    this->setPen( QPen( QColor(99, 214, 104), 1.5 ) );
     this->color = 1;
     this->name = name;
     this->id = id;
@@ -154,20 +154,29 @@ bool Street::WhichWay( Street* street1, Street* street2 ){
 
 void Street::mousePressEvent( QGraphicsSceneMouseEvent* event ){
 
-    QPen pen = this->pen();
-    QColor col = pen.color();
-    if(col == QColor(99, 214, 104) && changeable){
-       this->setPen(QPen(QColor(255, 151, 77)));
-        this->color = 2;
-    }
-    else if(col == QColor(255, 151, 77) && changeable){
-        this->setPen(QColor(242, 60, 50));
-        this->color = 3;
-    }
-    else if(col == QColor(242, 60, 50) && changeable){
-        this->setPen(QColor(99, 214, 104));
-        this->color = 1;
-    }
+    QColor col = this->pen().color();
+    if(event->button() & Qt::LeftButton  && changeable){
 
+        if(col == QColor(99, 214, 104)){
+           this->setPen(QPen(QColor(255, 151, 77), 1.5));
+            this->color = 2;
+        }
+        else if(col == QColor(255, 151, 77)){
+            this->setPen(QPen(QColor(242, 60, 50), 1.5));
+            this->color = 3;
+        }
+        else if(col == QColor(242, 60, 50)){
+            this->setPen(QPen(QColor(99, 214, 104), 1.5));
+            this->color = 1;
+        }
+    }
+    else if (changeable){
+        if(col == QColor(180,180,180) || col == QColor(0,170,240)){
+           emit setBackColor(this);
+        }
+        else{
+            emit isBlack(GetMiddle(), this);
+        }
+    }
 }
 

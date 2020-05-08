@@ -17,6 +17,7 @@ MainWindow::MainWindow(QWidget *parent)
     lastTime = time;
     connect( timer, SIGNAL( timeout() ), this, SLOT( get_time() ) );
     connect(ui->resetButton, SIGNAL(clicked()), this, SLOT(resetBtnChecked()));
+    connect(ui->linkButton, SIGNAL(clicked()), this, SLOT(linkBtnChecked()));
 }
 
 
@@ -48,12 +49,59 @@ void MainWindow::resetBtnChecked(){
     ui->graphicsView->setTransform(org);
     ui->speeder->setValue(1);
     ui->graphicsView_2->setScene(new QGraphicsScene( ui->graphicsView_2 ));
+    ui->verticalSlider->setValue(15);
+}
+
+void MainWindow::linkBtnChecked(){
+    if(changingLink){
+        changingLink = false;
+        ui->linkButton->setText("Zmena trasy");
+        for(Street* value: alternateRoute){
+            qDebug()<<value->GetStreetID();
+        }
+    }
+    else{
+        changingLink = true;
+        ui->linkButton->setText("Hotovo");
+    }
 }
 
 void MainWindow::zoom( int x ){
     auto org = ui->graphicsView->transform();
     qreal scale = x / 10.0;
     ui->graphicsView->setTransform( QTransform( scale, org.m12(), org.m21(), scale, org.dx(), org.dy()));
+}
+
+void MainWindow::drawCross(coordinate* middle, Street* s){
+    if(changingLink){
+        if(alternateRoute.size() == 0){
+            s->setPen(QPen(QColor(180,180,180), 1.5));
+//            QLineF line;
+//            line.setLine(middle->GetX()-5,middle->GetY()+5,middle->GetX()-5,middle->GetY()+5);
+//            scene->addLine(line);
+        }
+        else{
+            s->setPen(QPen(QColor(0,170,240), 1.5));
+        }
+
+        if(changingLink){
+            alternateRoute.push_back(s);
+        }
+    }
+}
+
+void MainWindow::backColor(Street* s){
+    if(s->color == 1) s->setPen(QPen(QColor(99, 214, 104), 1.5));
+    else if(s->color == 2) s->setPen(QPen(QColor(255, 151, 77), 1.5));
+    else if(s->color == 3) s->setPen(QPen(QColor(242, 60, 50), 1.5));
+
+    QVector<Street*>::iterator i;
+    for ( i = alternateRoute.begin(); i != alternateRoute.end(); ++i ){
+        if((*i)->GetStreetID() == s->GetStreetID()){
+            i = alternateRoute.erase(i);
+            if(i == alternateRoute.end()) break;
+        }
+    }
 }
 
 void MainWindow::initScene( QMap<QString, Street*> streets, QMap<QString, QMap<QString, Bus*>> bussesHash, QMap<QString, line*> linkHash ){
@@ -75,7 +123,8 @@ void MainWindow::initScene( QMap<QString, Street*> streets, QMap<QString, QMap<Q
 
     QMap<QString, Street*>::iterator i;
     for ( i = streets.begin(); i != streets.end(); ++i ){
-
+        connect(streets[ i.key() ], SIGNAL(isBlack(coordinate*, Street*)), this, SLOT(drawCross(coordinate*, Street*)));
+        connect(streets[ i.key() ], SIGNAL(setBackColor(Street*)), this, SLOT(backColor(Street*)));
         scene->addItem( streets[ i.key() ] );
 
         stop* s1 = streets[ i.key() ]->getStop();

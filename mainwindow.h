@@ -51,6 +51,8 @@ private:
     bool depart( Bus* bus );
     QVector<QGraphicsLineItem*> pickedLines;
     void clearPicked();
+    bool changingLink = false;
+    QVector<Street*> alternateRoute;
 
 private slots:
 
@@ -75,7 +77,10 @@ private slots:
      * @brief resetBtnChecked Funkcia pre talcidlo Reset
      */
     void resetBtnChecked();
+    void linkBtnChecked();
     void BusSignal( QVector<QVector<QString>> stops, int currTime, QVector<Street*> route, bool inStation );
+    void drawCross(coordinate* middle, Street *s);
+    void backColor(Street* s);
 
 public:
 
@@ -95,6 +100,7 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
     void test();
+
 
 protected:
     /**

@@ -13,8 +13,8 @@
 
 using namespace::std;
 
-class Street : public QGraphicsLineItem{
-
+class Street : public QObject, public QGraphicsLineItem{
+    Q_OBJECT
 private:
 
     QString name;
@@ -100,7 +100,9 @@ public:
      * @return Vrati true jestlize se ma cestovat doleva. jinak false
      */
     bool WhichWay( Street* street1, Street* street2 );
-
+signals:
+    void isBlack(coordinate* middle, Street* s);
+    void setBackColor(Street* s);
 };
 
 
