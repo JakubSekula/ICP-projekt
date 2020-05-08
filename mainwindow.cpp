@@ -54,17 +54,23 @@ void MainWindow::resetBtnChecked(){
 
 void MainWindow::replaceRoute(){
     int i = 0;
+    bool changeForBus = false;
 
     QVector<Street*> newRoute;
     QVector<QVector<QString>> newStreets;
 
     for( Bus* bus : busses ){
+        changeForBus = false;
         if( i != 0 ){
             QVector<Street*> streets = bus->getRoute();
             int str = 0;
             bus->clearRoute();
             for( Street* street : streets ){
                 if( street->GetStreetID() == alternateRoute.first()->GetStreetID() ){
+                //    qDebug() << str << bus->currenti;
+                    if( str < bus->currenti ){
+                        changeForBus = true;
+                    }
                     for( int i = 0; i < bus->plannedStops.size(); i++ ){
                         if( bus->plannedStops[ i ][ 0 ] == street->GetStreetID() ){
                             //qDebug() << bus->plannedStops[ i ];
@@ -74,11 +80,13 @@ void MainWindow::replaceRoute(){
                     }
                     bus->plannedStops.clear();
                     bus->plannedStops = newStreets;
+                    actuallStops.insert( bus->getName(), newStreets );
                     newStreets.clear();
                     //qDebug() << "nasel jsem na indexu: " << str << streets[ str ]->GetStreetID();
                     int replacement = 0;
                     for( Street* streetReplace : alternateRoute ){
                         if( replacement != 0 ){
+                            changeForBus = true;
                             newRoute.push_back( streetReplace );
                         }
                         replacement++;
@@ -88,15 +96,43 @@ void MainWindow::replaceRoute(){
                 }
                 str++;
             }
-            bus->clearRoute();
-            bus->route = newRoute;
+            //if( changeForBus ){
+            //    qDebug() << "NEW ROUTE: " << newRoute.size();
+                bus->clearRoute();
+                bus->route = newRoute;
+           // }
+            actuallLink.insert( bus->getName(), newRoute );
             newRoute.clear();
+           // qDebug() << ":GA:";
         }
         i++;
     }
 }
 
+QVector<QVector<QString>> MainWindow::getActualStops( Bus* bus ){
+    QVector<QVector<QString>> stops = bus->plannedStops;
+
+    int size = actuallStops[ bus->getName() ].size();
+    int stopSize = stops.size();
+
+    for( int i = 0; i < stopSize; i++ ){
+        if( i < size ){
+            if( stops[ i ][ 0 ] != actuallStops[ bus->getName() ][ i ][ 0 ] ){
+                stops.remove( i );
+                stopSize--;
+            }
+        }
+    }
+    bus->plannedStops.clear();
+    return stops;
+}
+
 void MainWindow::alternateRouteFunc(){
+
+        if( alternateRoute.size() == 0 ){
+            return;
+        }
+
         int i = 0;
         Street* current;
         for( Street* street : alternateRoute ){
@@ -228,6 +264,13 @@ void MainWindow::spawnBus(){
                 bus->setPos( bus->getMiddle() );
                 bus->setBus();
                 bus->enRoute = true;
+                if( actuallLink[ bus->getName() ].size() != 0 ){
+                    bus->clearRoute();
+                    bus->route = actuallLink[ bus->getName() ];
+                    if( actuallStops[ bus->getName() ].size() != 0 ){
+                        bus->plannedStops = getActualStops( bus );
+                    }
+                }
                 this->busses.push_back( bus );
             }
         }

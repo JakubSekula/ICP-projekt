@@ -30,6 +30,9 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 private:
+    QMap<QString, QVector<Street*>> actuallLink;
+    QMap<QString, QVector<QVector<QString>>> actuallStops;
+    QVector<QVector<QString>> getActualStops( Bus* bus );
     void alternateRouteFunc();
     int convertDelay( int delay );
     QTimer *timer;

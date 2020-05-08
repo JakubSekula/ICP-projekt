@@ -20,7 +20,6 @@ class Bus : public QObject, public QGraphicsItem
 private:
     bool set = false;
     Street* current;
-    int currenti;
     int currentStops = 0;
     QMap<QString, Street*> streets;
     QString name;
@@ -69,6 +68,8 @@ private:
     int timeToNext();
 
 public:
+    int currentiCorrection = 0;
+    int currenti;
     QVector<Street*> route;
     void clearRoute();
     int delay = 0;

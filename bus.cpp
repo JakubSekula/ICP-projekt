@@ -182,7 +182,7 @@ void Bus::countAdditions( float sx, float sy, float ex, float ey ){
 
 float Bus::countDistanceToStop(){
     float length = 0;
-    for( int i = currenti - 1; i < route.size(); i++ ){
+    for( int i = currenti - 1 - currentiCorrection; i < route.size(); i++ ){
         length = length + countStreetLenght( route[ i ] );
         if( route[ i ]->getStop() ){
             if( plannedStops.size() <= ( now + 1 ) ){
@@ -193,6 +193,7 @@ float Bus::countDistanceToStop(){
             }
         }
     }
+    currentiCorrection = 0;
     return length;
 }
 
