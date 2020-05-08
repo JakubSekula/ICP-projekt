@@ -214,6 +214,13 @@ protected:
     void mousePressEvent( QGraphicsSceneMouseEvent *event ) override;
 
 signals:
+    /**
+     * @brief valueChangedd Signal vytvoreny pri kliknuti na autobus.
+     * @param stops Zastavky cez ktore autobus prechadza.
+     * @param currentPos
+     * @param route
+     * @param stationary
+     */
     void valueChangedd( QVector<QVector<QString>> stops, int currentPos, QVector<Street*> route, bool stationary );
 };
 

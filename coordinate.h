@@ -26,7 +26,7 @@ public:
     float GetY();
 
 private:
-    float x, y;
+    float x, y; //!< x a y suradnica bodu
 };
 
 #endif // COORDINATE_H

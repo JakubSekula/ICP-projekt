@@ -51,8 +51,11 @@ private:
     int jump;
     bool depart( Bus* bus );
     QVector<QGraphicsLineItem*> pickedLines;
+    /**
+     * @brief clearPicked Zrusenie zvyraznenia trasy po ktorej ide autobus
+     */
     void clearPicked();
-    bool changingLink = false;
+    bool changingLink = false; //!< Ci je aktivny stav klikania obchadzky
 
 private slots:
 
@@ -61,6 +64,9 @@ private slots:
      * @param x Zvacsenie
      */
     void zoom( int x );
+    /**
+     * @brief get_time Zistenie casu a zabezpecenie pohybu autobusu.
+     */
     void get_time();
 
     /**
@@ -81,6 +87,13 @@ private slots:
      * @brief linkBtnChecked Funkcia pre tlacidlo na zmenu trasy.
      */
     void linkBtnChecked();
+    /**
+     * @brief BusSignal Funkcia na zvyraznenie trasy pri kliknuti na autobus
+     * @param stops Zastavky cez ktore autobus prechadza
+     * @param currTime
+     * @param route
+     * @param inStation
+     */
     void BusSignal( QVector<QVector<QString>> stops, int currTime, QVector<Street*> route, bool inStation );
     /**
      * @brief drawCross Funkcia pre zmeny farby cesty a vykreslenie krizu na uzvretu cestu.
@@ -108,7 +121,7 @@ public:
      * @brief MainWindow::spawnBus Pridanie autobusu do mapy na zaciatocnu zastavku
      */
     void spawnBus();
-    QVector<Street*> alternateRoute;
+    QVector<Street*> alternateRoute; //!< Vektor ciest v obchadzke, prva cesta je uzavreta a ostatne su obchadzka
     void replaceRoute();
     Ui::MainWindow *ui;
     MainWindow(QWidget *parent = nullptr);

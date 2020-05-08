@@ -52,9 +52,9 @@ private:
     stop* s1;
     line* Line;
     Street* street;
-    QMap<QString, Street*> hash;
-    QMap<QString, Bus*> busHash;
-    QMap<QString, line*> lineHash;
+    QMap<QString, Street*> hash; //!< Mapa
+    QMap<QString, Bus*> busHash; //!< Autobusy
+    QMap<QString, line*> lineHash; //!< Spoje
 
     /**
      * @brief readcsv::getTimeDiff Vypocitanie odchodu

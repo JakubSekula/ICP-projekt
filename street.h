@@ -23,7 +23,8 @@ private:
     stop* s1 = NULL;
     coordinate* middle = NULL;
     /**
-     * @brief mousePressEvent Metoda zavolana pri kliknuti na cestu. Stara sa o zafarbenie ciest a vytvara signal pre oznacovanie ciest na obchadzku.
+     * @brief mousePressEvent Metoda zavolana pri kliknuti na cestu.
+     *        Stara sa o zafarbenie ciest a vytvara signal pre oznacovanie ciest na obchadzku.
      * @param event
      */
     virtual void mousePressEvent(QGraphicsSceneMouseEvent* event) override;
@@ -33,7 +34,7 @@ public:
     bool changeable = true;
     int delay = 0;
     /**
-     * @brief Street::Street Konstruktor. Naastavenie cesty
+     * @brief Street::Street Konstruktor. Nastavenie cesty
      * @param id
      * @param name
      * @param c1
