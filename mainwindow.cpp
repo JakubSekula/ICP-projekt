@@ -91,15 +91,19 @@ void MainWindow::drawCross(coordinate* middle, Street* s){
 }
 
 void MainWindow::backColor(Street* s){
-    if(s->color == 1) s->setPen(QPen(QColor(99, 214, 104), 1.5));
-    else if(s->color == 2) s->setPen(QPen(QColor(255, 151, 77), 1.5));
-    else if(s->color == 3) s->setPen(QPen(QColor(242, 60, 50), 1.5));
 
     QVector<Street*>::iterator i;
     for ( i = alternateRoute.begin(); i != alternateRoute.end(); ++i ){
         if((*i)->GetStreetID() == s->GetStreetID()){
-            i = alternateRoute.erase(i);
-            if(i == alternateRoute.end()) break;
+            if(!((*i)->pen().color() == QColor(180,180,180) && alternateRoute.size() > 1)){
+                i = alternateRoute.erase(i);
+
+                if(s->color == 1) s->setPen(QPen(QColor(99, 214, 104), 1.5));
+                else if(s->color == 2) s->setPen(QPen(QColor(255, 151, 77), 1.5));
+                else if(s->color == 3) s->setPen(QPen(QColor(242, 60, 50), 1.5));
+
+                if(i == alternateRoute.end()) break;
+            }
         }
     }
 }
