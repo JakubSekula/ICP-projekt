@@ -31,6 +31,8 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 private:
+    QMap<QString,int>delay;
+    int dly = 0;
     QVector<QGraphicsLineItem*> detour;
     void deleteMarked();
     int timerTime = 0;

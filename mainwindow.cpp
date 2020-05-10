@@ -59,6 +59,8 @@ void MainWindow::replaceRoute(){
     bool changeForBus = false;
     bool changeCurrenti = false;
     bool changeStreets = false;
+    QMessageBox msgBox;
+    int dly = 0;
 
     QVector<Street*> newRoute;
     QVector<QVector<QString>> newStreets;
@@ -70,9 +72,14 @@ void MainWindow::replaceRoute(){
         if( i != 0 ){
             QVector<Street*> streets = bus->getRoute();
             int str = 0;
-            bus->clearRoute();
             for( Street* street : streets ){
                 if( street->GetStreetID() == alternateRoute.first()->GetStreetID() ){
+                    if( !streets[ str ]->equals( alternateRoute.back() ) ){
+                        msgBox.critical( 0, "Error", "Objizdka nenavazuje" );
+                        deleteMarked();
+                        return;
+                    }
+                    bus->clearRoute();
                     if( str < bus->currenti ){
                         changeForBus = true;
                         changeCurrenti = true;
@@ -100,10 +107,15 @@ void MainWindow::replaceRoute(){
                     for( Street* streetReplace : alternateRoute ){
                         if( replacement != 0 ){
                             changeForBus = true;
+
+                            bus->delay = bus->delay + 5;
+                            dly += 5;
                             newRoute.push_back( streetReplace );
                         }
                         replacement++;
                     }
+                    delay.insert( bus->getName(), dly );
+                    dly = 0;
                 } else {
                     newRoute.push_back( street );
                 }
@@ -250,8 +262,6 @@ void MainWindow::backColor(Street* s){
 
 void MainWindow::initScene( QMap<QString, Street*> streets, QMap<QString, QMap<QString, Bus*>> bussesHash, QMap<QString, line*> linkHash ){
 
-//    QPainter painter(this);
-
     this->bussesHash = bussesHash;
     this->linkHash = linkHash;
 
@@ -304,6 +314,7 @@ void MainWindow::spawnBus(){
                 bus->setBus();
                 bus->enRoute = true;
                 if( actuallLink[ bus->getName() ].size() != 0 ){
+                    bus->delay = delay[ bus->getName() ];
                     bus->clearRoute();
                     bus->route = actuallLink[ bus->getName() ];
                     if( actuallStops[ bus->getName() ].size() != 0 ){
@@ -378,7 +389,6 @@ bool MainWindow::depart( Bus* bus ){
 
     int busStart = ( bus->start.left( 2 ) + bus->start.right( 2 ) ).toInt();
 
-    // qDebug() << timerTime << convertToSec( busStart ) << busStart;
     if( convertToSec( busStart ) == timerTime ){
         bus->enRoute = true;
     }

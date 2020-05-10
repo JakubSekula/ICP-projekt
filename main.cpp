@@ -14,8 +14,8 @@
 
 int main(int argc, char *argv[])
 {
-    // konstruktor nacte csv do mapy
 
+    // konstruktor nacte csv do mapy
 
     QMap<QString, Street*> phony;
     QMap<QString, line*> phonyl;

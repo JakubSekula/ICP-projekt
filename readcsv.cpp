@@ -108,7 +108,6 @@ void readcsv::LoadBus( QString filecsv, QMap<QString, Street*> hashStreet, QMap<
                 if( i < lines[ row[ 0 ] ]->stoptime.size() - 1 ){
                     test.push_back( lines[ row[ 0 ] ]->stoptime[ i ][ 0 ] );
                     test.push_back( getTimeDiff( lines[ row[ 0 ] ]->stoptime[ i ][ 1 ], lines[ row[ 0 ] ]->reps.toInt(), iter ) );
-                    //lines[ row[ 0 ] ]->stoptime[ i ][ 1 ] = getTimeDiff( lines[ row[ 0 ] ]->stoptime[ i ][ 1 ], lines[ row[ 0 ] ]->reps.toInt(), iter );
                 } else {
                     test.push_back( lines[ row[ 0 ] ]->stoptime[ i ][ 0 ] );
                     test.push_back( lines[ row[ 0 ] ]->stoptime[ i ][ 1 ] );

@@ -232,7 +232,6 @@ int Bus::timeToNext(){
 
     int secondsToStop = ( secondStopMin - firstStopMin )*60 + ( secondStopSec - firtStopSec );
 
-    // TODO osetreni stejnych minnut ale mensich sekund u druheho
     if( secondStopMin < firstStopMin ){
         secondsToStop =  3600 - firtStopSec - firstStopMin * 60;
         secondsToStop = secondsToStop + secondStopMin * 60 + secondStopSec;
