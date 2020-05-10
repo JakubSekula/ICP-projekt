@@ -1,3 +1,20 @@
+/******************************************************************************
+ * Projekt: Aplikace zobrazující autobusovou dopravu                          *
+ * Předmet: Seminář C++ - FIT VUT v Brně                                      *
+ * Rok:     2019/2020                                                         *
+ * Autoři:                                                                    *
+ *          Jakub Sekula (xsekul01) - xsekul00@stud.fit.vutbr.cz              *
+ *          Ondrej Potúček (xpotuc06) - xpotuc06@stud.fit.vutbr.cz            *
+ ******************************************************************************/
+
+/**
+ * @file bus.cpp
+ * @author Jakub Sekula (xsekul01)
+ * @author Ondrej Potúček (xpotuc06)
+ * @date 10.05.2020
+ * @brief informace o autobusech
+ */
+
 #include "bus.h"
 
 QRectF Bus::boundingRect() const{
@@ -32,13 +49,15 @@ QVector<Street *> Bus::getRoute(){
 void Bus::setRout( QString streetId ){
     int size = route.size();
     if( size == 0 ){
+        // prvni vzdy pushuji
         route.push_back( streets[ streetId ] );
     } else if( route[ size - 1 ]->equals( streets[ streetId ] ) ){
+        // jestlize na sebe navazuji
         route.push_back( streets[ streetId ] );
     } else {
         exit( 16 );
     }
-
+    // nastavim pocatecni pozici
     this->posX = route[ 0 ]->GetStreetStart().GetX();
     this->posY = route[ 0 ]->GetStreetStart().GetY();
     this->current = route[ 0 ];
@@ -74,7 +93,6 @@ QPointF Bus::getPos(){
 
 void Bus::setNul(){
     atEnd = false;
-    switcher = false;
     stationary = false;
     halflength = false;
     useRest = false;
@@ -99,18 +117,21 @@ void Bus::countAdditions( float sx, float sy, float ex, float ey ){
         stationary = false;
     }
 
+    // jestlize ma zastavit na zastace
     if( halflength ){
         hypotenuse = hypotenuse / 2;
         XDiff = XDiff / 2;
         YDiff = YDiff / 2;
     }
 
+    // zjisteni jestli se nachazim na stredu
     if( streetLength + step >= hypotenuse ){
         step = hypotenuse - streetLength;
         rest = step;
         newStreet = true;
     }
 
+    // zastavim
     if( useRest ){
         stepX = XDiff / ( hypotenuse / ( step + rest ) );
         stepY = YDiff / ( hypotenuse / ( step + rest ) );
@@ -124,12 +145,14 @@ void Bus::countAdditions( float sx, float sy, float ex, float ey ){
 
     bool shouldStop = false;
 
+    // zastavka na ulici je ta sama na ktere mam zastavit
     if( current->getStop() ){
         if( current->getStop()->getID() == plannedStops[ now + 1 ][ 0 ] ){
             shouldStop = true;
         }
     }
 
+    // mam zastavit na zastavce
     if( ( ( streetLength > hypotenuse / 2 ) && ( streetLength - step < hypotenuse / 2 ) ) && ( current->getStop() && shouldStop ) && stopAtStop ){
         shouldStop = false;
         if( current->getStop()->getID() == plannedStops[ now + 1 ][ 0 ] ){
@@ -177,6 +200,7 @@ void Bus::countAdditions( float sx, float sy, float ex, float ey ){
         }
     }
 
+    // ma byt nova ulice
     if( newStreet && route.size() - 1 != currenti ){
         current->changeable = true;
         current = route[ currenti ];
@@ -202,6 +226,7 @@ void Bus::countAdditions( float sx, float sy, float ex, float ey ){
 
 float Bus::countDistanceToStop(){
     float length = 0;
+    // prochazim ulice dokud nenarazim na ulici se zastavkou
     for( int i = currenti - 1 - currentiCorrection; i < route.size(); i++ ){
         length = length + countStreetLenght( route[ i ] );
         if( route[ i ]->getStop() ){
@@ -266,7 +291,6 @@ void Bus::nextPos(){
         changeStop = false;
     }
 
-
     current->changeable = false;
     if( current->color == 2 && set == false ){
         delay = delay + 5;
@@ -294,6 +318,9 @@ void Bus::nextPos(){
 
     departure = plannedStops[ now ][ 1 ];
 
+    /*
+     * v nasledujicich radcich rozhoduju jake casti ulic poslu do funkce countAdditions a tim padem kterym smerem se rozpohybuje bus
+     */
     if( currenti == 1 && !round ){
         if( current->WhichWay( current, route[ currenti ] ) ){
             countAdditions( current->GetMiddle()->GetX(), current->GetMiddle()->GetY(), current->GetStreetStart().GetX(), current->GetStreetStart().GetY() );
@@ -315,7 +342,7 @@ void Bus::nextPos(){
             countAdditions( current->GetStreetStart().GetX(), current->GetStreetStart().GetY(), current->GetStreetEnd().GetX(), current->GetStreetEnd().GetY() );
         }
     }
-
+    // byl jsem na zastavce
     if( current->getStop() && ( currentStops < plannedStops.size() ) ){
         if( current->getStop()->getID() == plannedStops[ currentStops ][ 0 ] ){
             currentStops++;

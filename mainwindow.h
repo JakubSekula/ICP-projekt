@@ -1,3 +1,20 @@
+/******************************************************************************
+ * Projekt: Aplikace zobrazující autobusovou dopravu                          *
+ * Předmet: Seminář C++ - FIT VUT v Brně                                      *
+ * Rok:     2019/2020                                                         *
+ * Autoři:                                                                    *
+ *          Jakub Sekula (xsekul01) - xsekul00@stud.fit.vutbr.cz              *
+ *          Ondrej Potúček (xpotuc06) - xpotuc06@stud.fit.vutbr.cz            *
+ ******************************************************************************/
+
+/**
+ * @file mainwindow.h
+ * @author Jakub Sekula (xsekul01)
+ * @author Ondrej Potúček (xpotuc06)
+ * @date 10.05.2020
+ * @brief hlavní grafické zobrazení
+ */
+
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
@@ -31,35 +48,44 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 private:
-    QMap<QString,int>delay;
-    int dly = 0;
-    QVector<QGraphicsLineItem*> detour;
+    QMap<QString,int>delay; //!< zpodeni pro spawn busu
+    int dly = 0; //!< nastaceni zpozdeni
+    QVector<QGraphicsLineItem*> detour; //!< seznam objizdnych tras
+
+    /**
+     * @brief deleteMarked smazani oznacene trasy
+     */
     void deleteMarked();
-    int timerTime = 0;
-    QMap<QString, QVector<Street*>> actuallLink;
-    QMap<QString, QVector<QVector<QString>>> actuallStops;
+    int timerTime = 0; //!< cas na casovaci
+    QMap<QString, QVector<Street*>> actuallLink; //!< linka
+    QMap<QString, QVector<QVector<QString>>> actuallStops; //!< zastavky na trase
+    /**
+     * @brief getActualStops zmena zastavek
+     * @param Bus ukazatel na bus tridu
+     */
     QVector<QVector<QString>> getActualStops( Bus* bus );
+    /**
+     * @brief alternateRouteFunc zmena trasy
+     */
     void alternateRouteFunc();
+    /**
+     * @brief convertToSec prevod casu na inkrementovanou hodnotu po 1
+     */
     int convertToSec( int busDep, int delay );
     int convertToSec( int busDep );
-    QTimer *timer;
-    int multiple = 1;
-    QGraphicsItem* elipsa{ nullptr };
-    QGraphicsItem* BusStop{ nullptr };
-    QVector<Bus*> busses{nullptr};
-    float posX = 504;
-    float posY = 217;
-    int posEX = 469;
-    int posEY = 245;
-    QRectF bStop;
-    QMap<int, line*> lines;
-    friend class Bus;
-    QMap<QString, QMap<QString, Bus*>> bussesHash;
-    QMap<QString, line*> linkHash;
-    QGraphicsScene* scene;
-    QTime lastTime;
+    QTimer *timer; // cas
+    QGraphicsItem* elipsa{ nullptr }; //!< ukazatel na grafiku zastavky
+    QGraphicsItem* BusStop{ nullptr }; //!< ukazatel na grafiku zastavek
+    QVector<Bus*> busses{nullptr}; //!< ukazatel na grafiku busu
+    QMap<QString, QMap<QString, Bus*>> bussesHash; //!< mapa busu
+    QMap<QString, line*> linkHash; //!< mapa linky
+    QGraphicsScene* scene; //!< ukazatel do graficke sceny
+    QTime lastTime; //!< rozdil casu oproti minulemu
+    /**
+     * @brief depart Jestli bus muze vyjet
+     */
     bool depart( Bus* bus );
-    QVector<QGraphicsLineItem*> pickedLines;
+    QVector<QGraphicsLineItem*> pickedLines; //!< zvolene ulice
     /**
      * @brief clearPicked Zrusenie zvyraznenia trasy po ktorej ide autobus
      */
@@ -131,11 +157,13 @@ public:
      */
     void spawnBus();
     QVector<Street*> alternateRoute; //!< Vektor ciest v obchadzke, prva cesta je uzavreta a ostatne su obchadzka
+    /**
+     * @brief MainWindow::replaceRoute Zmeni trasu busu
+     */
     void replaceRoute();
     Ui::MainWindow *ui;
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
-    void test();
 
 
 protected:

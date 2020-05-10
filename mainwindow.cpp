@@ -1,3 +1,20 @@
+/******************************************************************************
+ * Projekt: Aplikace zobrazující autobusovou dopravu                          *
+ * Předmet: Seminář C++ - FIT VUT v Brně                                      *
+ * Rok:     2019/2020                                                         *
+ * Autoři:                                                                    *
+ *          Jakub Sekula (xsekul01) - xsekul00@stud.fit.vutbr.cz              *
+ *          Ondrej Potúček (xpotuc06) - xpotuc06@stud.fit.vutbr.cz            *
+ ******************************************************************************/
+
+/**
+ * @file mainwindow.cpp
+ * @author Jakub Sekula (xsekul01)
+ * @author Ondrej Potúček (xpotuc06)
+ * @date 10.05.2020
+ * @brief hlavní grafické zobrazení
+ */
+
 #include "mainwindow.h"
 
 MainWindow::MainWindow(QWidget *parent)
@@ -61,6 +78,12 @@ void MainWindow::replaceRoute(){
     bool changeStreets = false;
     QMessageBox msgBox;
     int dly = 0;
+
+    if( alternateRoute.size() == 1 ){
+        msgBox.critical( 0, "Error", "Zvolte prosim objezdnou trasu" );
+        deleteMarked();
+        return;
+    }
 
     QVector<Street*> newRoute;
     QVector<QVector<QString>> newStreets;
@@ -301,9 +324,9 @@ void MainWindow::initScene( QMap<QString, Street*> streets, QMap<QString, QMap<Q
 
 void MainWindow::spawnBus(){
 
-    QMap<QString, QMap<QString,Bus*>>::iterator test;
-    for( test = bussesHash.begin(); test != bussesHash.end(); test++ ){
-        for( auto* bus : *test ){
+    QMap<QString, QMap<QString,Bus*>>::iterator outer;
+    for( outer = bussesHash.begin(); outer != bussesHash.end(); outer++ ){
+        for( auto* bus : *outer ){
             QString sysTime = ui->lineEdit->text().right( 7 ).split( ' ', QString::SkipEmptyParts ).join( "" );
             QString myTime = bus->getStart();
             if( ( myTime == sysTime ) && ( bus->onmap == false ) ){
@@ -326,8 +349,6 @@ void MainWindow::spawnBus(){
         }
     }
 }
-
-
 
 void MainWindow::get_time(){
     QTime time = QTime::fromString( ui->lineEdit->text(), "hh : mm : ss" );

@@ -1,3 +1,20 @@
+/******************************************************************************
+ * Projekt: Aplikace zobrazující autobusovou dopravu                          *
+ * Předmet: Seminář C++ - FIT VUT v Brně                                      *
+ * Rok:     2019/2020                                                         *
+ * Autoři:                                                                    *
+ *          Jakub Sekula (xsekul01) - xsekul00@stud.fit.vutbr.cz              *
+ *          Ondrej Potúček (xpotuc06) - xpotuc06@stud.fit.vutbr.cz            *
+ ******************************************************************************/
+
+/**
+ * @file readcsv.h
+ * @author Jakub Sekula (xsekul01)
+ * @author Ondrej Potúček (xpotuc06)
+ * @date 10.05.2020
+ * @brief načítání csv souborů
+ */
+
 #ifndef READCSV_H
 #define READCSV_H
 
@@ -42,8 +59,9 @@ public:
     /**
      * @brief readcsv::LoadLine precitanie .csv suboru a nacitanie hodnot
      * @param filecsv .csv subor na citanie
+     * @param hashStreet QMap s informacemi o cestach
      */
-    void LoadLine( QString filecsv );
+    void LoadLine( QString filecsv, QMap<QString, Street*> hashStreet );
 
 private:
     Bus* bus;

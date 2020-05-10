@@ -1,3 +1,21 @@
+/******************************************************************************
+ * Projekt: Aplikace zobrazující autobusovou dopravu                          *
+ * Předmet: Seminář C++ - FIT VUT v Brně                                      *
+ * Rok:     2019/2020                                                         *
+ * Autoři:                                                                    *
+ *          Jakub Sekula (xsekul01) - xsekul00@stud.fit.vutbr.cz              *
+ *          Ondrej Potúček (xpotuc06) - xpotuc06@stud.fit.vutbr.cz            *
+ ******************************************************************************/
+
+/**
+ * @file bus.h
+ * @author Jakub Sekula (xsekul01)
+ * @author Ondrej Potúček (xpotuc06)
+ * @date 10.05.2020
+ * @brief informace o autobusech
+ */
+
+
 #ifndef BUS_H
 #define BUS_H
 
@@ -19,21 +37,22 @@ class Bus : public QObject, public QGraphicsItem
     Q_OBJECT
 
 private:
+    /**
+     * @brief Bus::switchStops zmeni zastavku
+     */
     void switchStops();
-    QVector<QVector<QString>>plannedNewStops;
-    bool set = false;
-    Street* current;
-    int currentStops = 0;
-    QMap<QString, Street*> streets;
-    QString name;
-    QString id;
-    float posX;
-    float posY;
-    float xStep;
-    float yStep;
-    bool switcher = false;
-    QVector<QString> stopsOnRoute;
-    QVector<int> additions;
+    QVector<QVector<QString>>plannedNewStops; // naplanovane zastavky na trase
+    bool set = false; // nastaveni barvy ulice a zpozdeni
+    Street* current; // soucasna ulice
+    int currentStops = 0; // kolik zastavek jsem jiz navstivil
+    QMap<QString, Street*> streets; // ulice na ceste
+    QString name; // nazev bus
+    QString id; // identifikator busu
+    float posX; // pozice v X
+    float posY; // pozice v X
+    float xStep; // krok v X
+    float yStep; // krok v Y
+    QVector<QString> stopsOnRoute; // zastavky na ceste
 
     /**
      * @brief Bus::countStreetLenght Vypocita a vrati dlzku cesty
@@ -41,27 +60,28 @@ private:
      * @return Vrati dlzku cesty
      */
     float countStreetLenght( Street* street );
-    float speedCoef = 1;
-    int stopnow = 0;
-    int currentStop = 0;
-    float diffx = 0;
-    float diffy = 0;
-    float step;
-    float streetLength = 0;
+    float step;     // krok na ceste
+    float streetLength = 0; // delka ulice
+    /**
+     * @brief Bus::countStreetLenght Vypocita a vrati dlzku cesty
+     * @param sx start ulice v x
+     * @param sy start ulice v y
+     * @param ex konec ulice v x
+     * @param ey konec ulice v y
+     */
     void countAdditions( float sx, float sy, float ex, float ey );
-    float hypotenuse = 0;
-    float rest = 0;
-    bool useRest = false;
-    bool stopAtStop = false;
-    bool changeStop = false;
-    int streetWithStop = 0;
+    float hypotenuse = 0; // prepona cesty
+    float rest = 0; // zastavka na ceste
+    bool useRest = false; // jestlize se ma bus zastavit na zastavce na ulici
+    bool stopAtStop = false; // jestlize ma zustat stat na zastavce
+    bool changeStop = false; // zmena zastavky
 
     /**
      * @brief Bus::countDistanceToStop
      * @return  vrati vzdialenost do najblizsej zastavky
      */
     float countDistanceToStop();
-    float length = 0;
+    float length = 0; // vzdalenost do dalsi zastavky
     bool halflength = false;
 
     /**
@@ -71,22 +91,30 @@ private:
     int timeToNext();
 
 public:
-    bool switchStop = false;
-    bool switchNow = false;
+    bool switchStop = false; // jestlize se ma prepsat seznam zastavek na zastavce pro objizdku
+    bool switchNow = false; // jestli se ma zmenit nyni
+    /**
+     * @brief Bus::setNewStreeets nastavuje novou cestu pro autobus
+     * @param plannedNStops vektor vektoru s informacemi o ceste
+     */
     void setNewStreeets( QVector<QVector<QString>>plannedNStops );
-    int newTime = 0;
-    bool refactorRoute = false;
-    bool refactor = false;
-    int timeFromStop = 0;
-    int currentiCorrection = 0;
-    int currenti;
-    QVector<Street*> route;
+    int newTime = 0;    // cas
+    bool refactorRoute = false; // prepocet delky cesty
+    bool refactor = false; // prepocet zastavek
+    int timeFromStop = 0; // uplnynuly cas od zastavek
+    int currentiCorrection = 0; //
+    int currenti;   // index soucasne ulice
+    QVector<Street*> route; // cesta
+    /**
+     * @brief Bus::clearRoute vycisti vektor cest
+     * @param plannedNStops vektor vektoru s informacemi o ceste
+     */
     void clearRoute();
-    int delay = 0;
-    bool enRoute = false;
-    bool stationary = false;
-    bool newRound = false;
-    QString departure;
+    int delay = 0;  //!< zpozdeni
+    bool enRoute = false; //!< jestlize se nachazi na ceste
+    bool stationary = false; //!< jestlize stoji
+    bool newRound = false; //!< je v cilove zastavce
+    QString departure;  //!< id zastavky odjezdu
 
     /**
      * @brief Bus::boundingRect Vytvori kruh, znacku autobusu
@@ -101,7 +129,7 @@ public:
      * @param widget
      */
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = Q_NULLPTR) override;
-    QGraphicsEllipseItem* bus{nullptr};
+    QGraphicsEllipseItem* bus{nullptr}; //!< grafika busu
 
     /**
      * @brief Bus Konstruktor, vrati instanci na bus
@@ -195,21 +223,20 @@ public:
      * @return Vrati cas vyjazdu
      */
     QString getStart();
-    QString start;
-    bool onmap = false;
-    QString startTime;
-    QVector<stop*> stops;
+    QString start; //!< v kolik zacal svoji jizdu
+    bool onmap = false; //!< jestlize se nachazi na mape
+    QString startTime; //!< v kolik vyjel
+    QVector<stop*> stops; //!< zastavky na ceste
 
     /**
      * @brief Bus::getStops
      */
     void getStops();
-    QVector<QVector<QString>>plannedStops;
-    QMap<int,QVector<float>>test;
-    int steps = 0;
-    int now = 0;
-    bool round = false;
-    bool atEnd = false;
+    QVector<QVector<QString>>plannedStops; //!< naplanovane zastavky
+    int steps = 0;  //!< krok na ceste
+    int now = 0; //!< index zastavky
+    bool round = false; //!< kolo ulice
+    bool atEnd = false; //!< nachazi se na konci
 
     /**
      * @brief Bus::setNul Inicializacia na povodne hodnoty pri skonceni trasy pre zacatie trasy znova

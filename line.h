@@ -1,3 +1,20 @@
+/******************************************************************************
+ * Projekt: Aplikace zobrazující autobusovou dopravu                          *
+ * Předmet: Seminář C++ - FIT VUT v Brně                                      *
+ * Rok:     2019/2020                                                         *
+ * Autoři:                                                                    *
+ *          Jakub Sekula (xsekul01) - xsekul00@stud.fit.vutbr.cz              *
+ *          Ondrej Potúček (xpotuc06) - xpotuc06@stud.fit.vutbr.cz            *
+ ******************************************************************************/
+
+/**
+ * @file line.h
+ * @author Jakub Sekula (xsekul01)
+ * @author Ondrej Potúček (xpotuc06)
+ * @date 10.05.2020
+ * @brief informace o lince
+ */
+
 #ifndef LINE_H
 #define LINE_H
 
@@ -11,11 +28,14 @@ class line
 
 public:
     QString id;
-    QString reps;
-    QMap<QString,QVector<QVector<QString>>> stoptimes;
-    QVector<QVector<QString>>stoptime;
+    QString reps; //!< kolik busu se ma zobrazit v prubehu hodiny
+    QMap<QString,QVector<QVector<QString>>> stoptimes; //!< doby zastavek
+    QVector<QVector<QString>>stoptime; //!< cas zastaveni
 
 public:
+    /**
+     * @brief Line Konstruktor
+     */
     line();
 
     /**

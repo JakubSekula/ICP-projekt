@@ -20,7 +20,14 @@
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_5">
         <item>
-         <widget class="QTimeEdit" name="lineEdit"/>
+         <widget class="QTimeEdit" name="lineEdit">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
+          <property name="readOnly">
+           <bool>true</bool>
+          </property>
+         </widget>
         </item>
         <item>
          <widget class="QSpinBox" name="speeder">
@@ -112,7 +119,7 @@
      <x>0</x>
      <y>0</y>
      <width>1014</width>
-     <height>26</height>
+     <height>21</height>
     </rect>
    </property>
   </widget>

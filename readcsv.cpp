@@ -1,4 +1,22 @@
-﻿#include "readcsv.h"
+﻿/******************************************************************************
+ * Projekt: Aplikace zobrazující autobusovou dopravu                          *
+ * Předmet: Seminář C++ - FIT VUT v Brně                                      *
+ * Rok:     2019/2020                                                         *
+ * Autoři:                                                                    *
+ *          Jakub Sekula (xsekul01) - xsekul00@stud.fit.vutbr.cz              *
+ *          Ondrej Potúček (xpotuc06) - xpotuc06@stud.fit.vutbr.cz            *
+ ******************************************************************************/
+
+/**
+ * @file readcsv.cpp
+ * @author Jakub Sekula (xsekul01)
+ * @author Ondrej Potúček (xpotuc06)
+ * @date 10.05.2020
+ * @brief načítání csv souborů
+ */
+
+
+#include "readcsv.h"
 
 readcsv::readcsv( QString filecsv, QString FileType, QMap<QString, Street*> hashStreet, QMap<QString, line*> lines ){
 
@@ -7,7 +25,7 @@ readcsv::readcsv( QString filecsv, QString FileType, QMap<QString, Street*> hash
         } else if ( FileType == "Bus" ){
             LoadBus( filecsv, hashStreet, lines );
         } else if ( FileType == "Line" ){
-            LoadLine( filecsv );
+            LoadLine( filecsv, hashStreet );
         }else {
             exit( 32 );
         }
@@ -99,6 +117,9 @@ void readcsv::LoadBus( QString filecsv, QMap<QString, Street*> hashStreet, QMap<
 
             for( int i = 0; i < row.size(); i++ ){
                 if( i >= 1 ){
+                    if( !hashStreet.contains( row[ i ] ) ){
+                        exit( 56 );
+                    }
                     bus->setRout( row[ i ] );
                 }
             }
@@ -137,7 +158,7 @@ void readcsv::LoadBus( QString filecsv, QMap<QString, Street*> hashStreet, QMap<
     }
 }
 
-void readcsv::LoadLine( QString filecsv ){
+void readcsv::LoadLine( QString filecsv, QMap<QString, Street*> hashStreet ){
     QFile file( filecsv );
         if ( !file.open( QIODevice::ReadOnly | QIODevice::Text ) )
             return;
@@ -164,7 +185,13 @@ void readcsv::LoadLine( QString filecsv ){
             for( int i = 0; i < row.size(); i++ ){
                 if( i >= 2 ){
                     QStringList separate = row[ i ].split('/');
+                    if( separate.size() != 2 ){
+                        exit( 56 );
+                    }
                     stoptime.push_back( separate[ 0 ] );
+                    if( !hashStreet.contains( separate[ 0 ] ) ){
+                        exit( 56 );
+                    }
                     stoptime.push_back( separate[ 1 ] );
                     Line->stoptime.push_back( stoptime );
                     entire.push_back( stoptime );
@@ -183,6 +210,9 @@ void readcsv::LoadLine( QString filecsv ){
 }
 
 QString readcsv::getTimeDiff( QString time, int reps, int iter ){
+    if( time.length() != 5 ){
+        exit( 50 );
+    }
     int minutes = time.left(2).toInt();
     int another_departure = ( int ) 60/reps;
     QString departure = QString::number( another_departure * iter + minutes ) + " : " + time.right( 2 );
