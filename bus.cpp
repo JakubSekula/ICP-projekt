@@ -122,22 +122,42 @@ void Bus::countAdditions( float sx, float sy, float ex, float ey ){
         streetLength = streetLength + step;
     }
 
-    if( ( ( streetLength > hypotenuse / 2 ) && ( streetLength - step < hypotenuse / 2 ) ) && ( current->getStop() ) && stopAtStop ){
-        this->posX = current->GetMiddle()->GetX();
-        this->posY = current->GetMiddle()->GetY();
+    bool shouldStop = false;
 
-        changeStop = true;
-        stopAtStop = false;
-        stationary = true;
-        halflength = true;
-        if( now == plannedStops.size() - 2 ){
-            now = -1;
-            departure = plannedStops[ 0 ][ 1 ];
-            delay = 0;
-            set = false;
-            setNul();
-        } else {
-            departure = plannedStops[ now + 1 ][ 1 ];
+    if( current->getStop() ){
+        if( current->getStop()->getID() == plannedStops[ now + 1 ][ 0 ] ){
+            shouldStop = true;
+        }
+    }
+
+    if( ( ( streetLength > hypotenuse / 2 ) && ( streetLength - step < hypotenuse / 2 ) ) && ( current->getStop() && shouldStop ) && stopAtStop ){
+        shouldStop = false;
+        if( current->getStop()->getID() == plannedStops[ now + 1 ][ 0 ] ){
+            this->posX = current->GetMiddle()->GetX();
+            this->posY = current->GetMiddle()->GetY();
+
+            changeStop = true;
+            stopAtStop = false;
+            stationary = true;
+            halflength = true;
+
+            if( switchStop ){
+                switchStops();
+                if( switchNow ){
+                    now--;
+                    switchNow = false;
+                }
+            }
+
+            if( now == plannedStops.size() - 2 ){
+                now = -1;
+                departure = plannedStops[ 0 ][ 1 ];
+                delay = 0;
+                set = false;
+                setNul();
+            } else {
+                departure = plannedStops[ now + 1 ][ 1 ];
+            }
         }
     } else if ( sx <= ex ){
         if( sy <= ey ){
@@ -185,11 +205,13 @@ float Bus::countDistanceToStop(){
     for( int i = currenti - 1 - currentiCorrection; i < route.size(); i++ ){
         length = length + countStreetLenght( route[ i ] );
         if( route[ i ]->getStop() ){
-            if( plannedStops.size() <= ( now + 1 ) ){
-                break;
-            }
             if( route[ i ]->getStop()->getID() == plannedStops[ now + 1 ][ 0 ] ){
-                break;
+                if( plannedStops.size() <= ( now + 1 ) ){
+                    break;
+                }
+                if( route[ i ]->getStop()->getID() == plannedStops[ now + 1 ][ 0 ] ){
+                    break;
+                }
             }
         }
     }
@@ -221,23 +243,32 @@ int Bus::timeToNext(){
     return secondsToStop;
 }
 
+void Bus::setNewStreeets(QVector<QVector<QString> > plannedNStops){
+    plannedNewStops.clear();
+    plannedNewStops = plannedNStops;
+}
+
 void Bus::clearRoute(){
     route.clear();
 }
 
 void Bus::nextPos(){
 
+    timeFromStop++;
+
     if( changeStop ){
         now++;
+        refactor = false;
+        timeFromStop = 0;
     }
 
-    if( currenti == 1 || changeStop ){
+    if( currenti == 1 || changeStop || refactorRoute ){
         length = countDistanceToStop();
         changeStop = false;
     }
 
+
     current->changeable = false;
-    //qDebug() << current->color;
     if( current->color == 2 && set == false ){
         delay = delay + 5;
         set = true;
@@ -251,14 +282,18 @@ void Bus::nextPos(){
     step = length / ( int ) length;
 
     int timeTo = timeToNext();
+    if( refactorRoute ){
+        newTime = timeFromStop;
+        refactorRoute = false;
+    }
 
-    step = ( length * step ) / ( timeTo - 3 + current->delay );
+    if( refactor == false ){
+        step = ( length * step ) / ( timeTo - 3 + current->delay );
+    } else {
+        step = ( length * step ) / ( timeTo - newTime - 3 + current->delay );
+    }
 
     departure = plannedStops[ now ][ 1 ];
-
-    //qDebug() << step;
-
-    //qDebug() << currenti;
 
     if( currenti == 1 && !round ){
         if( current->WhichWay( current, route[ currenti ] ) ){
@@ -282,12 +317,11 @@ void Bus::nextPos(){
         }
     }
 
-    if( current->getStop() ){
-        if( current->getStop()->getID() != plannedStops[ currentStops ][ 0 ] ){
+    if( current->getStop() && ( currentStops < plannedStops.size() ) ){
+        if( current->getStop()->getID() == plannedStops[ currentStops ][ 0 ] ){
             currentStops++;
         }
     }
-
 }
 
 QString Bus::getId(){
@@ -331,11 +365,19 @@ void Bus::getStops(){
     // -1 protoze zastavka na konci je stejna jako na zacatku kvuli dojeti na zastavku
     for( int i = currentStops; i < stopsOnRoute.size() - 1; i++ ){
         if( stopsOnRoute[ i ] != plannedStops[ i ][ 0 ] ){
-            qDebug() << "Zastavky na ceste se neshoduji se zadanymi";
-            quick_exit( 60 );
+            QMessageBox msgBox;
+            msgBox.critical( 0, "Error", "Zastavky na ceste se neshoduji se zadanymi" );
+            exit( 60 );
         }
     }
 
+}
+
+
+void Bus::switchStops(){
+    plannedStops.clear();
+    plannedStops = plannedNewStops;
+    switchStop = false;
 }
 
 float Bus::countStreetLenght( Street *street ){

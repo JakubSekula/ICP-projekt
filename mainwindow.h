@@ -20,6 +20,7 @@
 #include <QString>
 #include <QDateTime>
 #include <QVectorIterator>
+#include <QMessageBox>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -30,11 +31,15 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 private:
+    QVector<QGraphicsLineItem*> detour;
+    void deleteMarked();
+    int timerTime = 0;
     QMap<QString, QVector<Street*>> actuallLink;
     QMap<QString, QVector<QVector<QString>>> actuallStops;
     QVector<QVector<QString>> getActualStops( Bus* bus );
     void alternateRouteFunc();
-    int convertDelay( int delay );
+    int convertToSec( int busDep, int delay );
+    int convertToSec( int busDep );
     QTimer *timer;
     int multiple = 1;
     QGraphicsItem* elipsa{ nullptr };
@@ -51,7 +56,6 @@ private:
     QMap<QString, line*> linkHash;
     QGraphicsScene* scene;
     QTime lastTime;
-    int jump;
     bool depart( Bus* bus );
     QVector<QGraphicsLineItem*> pickedLines;
     /**

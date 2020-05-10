@@ -34,6 +34,8 @@ void MainWindow::mousePressEvent(QMouseEvent *event)
 
 void MainWindow::resetBtnChecked(){
 
+    actuallLink.clear();
+    actuallStops.clear();
     QMap<QString, Street*> phony;
     QMap<QString, line*> phonyl;
     auto org = ui->graphicsView->transform();
@@ -55,34 +57,45 @@ void MainWindow::resetBtnChecked(){
 void MainWindow::replaceRoute(){
     int i = 0;
     bool changeForBus = false;
+    bool changeCurrenti = false;
+    bool changeStreets = false;
 
     QVector<Street*> newRoute;
     QVector<QVector<QString>> newStreets;
 
     for( Bus* bus : busses ){
         changeForBus = false;
+        changeStreets = false;
+        changeCurrenti = false;
         if( i != 0 ){
             QVector<Street*> streets = bus->getRoute();
             int str = 0;
             bus->clearRoute();
             for( Street* street : streets ){
                 if( street->GetStreetID() == alternateRoute.first()->GetStreetID() ){
-                //    qDebug() << str << bus->currenti;
                     if( str < bus->currenti ){
                         changeForBus = true;
+                        changeCurrenti = true;
                     }
                     for( int i = 0; i < bus->plannedStops.size(); i++ ){
                         if( bus->plannedStops[ i ][ 0 ] == street->GetStreetID() ){
-                            //qDebug() << bus->plannedStops[ i ];
+                            if( bus->now >= i ){
+                                bus->switchNow = true;
+                            } else if ( bus->now == i -1 ){
+                                changeStreets = true;
+                            } else {
+                                bus->switchNow = false;
+                            }
                         } else {
                             newStreets.push_back( bus->plannedStops[ i ] );
                         }
                     }
-                    bus->plannedStops.clear();
-                    bus->plannedStops = newStreets;
-                    actuallStops.insert( bus->getName(), newStreets );
-                    newStreets.clear();
-                    //qDebug() << "nasel jsem na indexu: " << str << streets[ str ]->GetStreetID();
+                    if( changeStreets == false ){
+                        bus->setNewStreeets( newStreets );
+                        bus->switchStop = true;
+                        actuallStops.insert( bus->getName(), newStreets );
+                        newStreets.clear();
+                    }
                     int replacement = 0;
                     for( Street* streetReplace : alternateRoute ){
                         if( replacement != 0 ){
@@ -96,17 +109,42 @@ void MainWindow::replaceRoute(){
                 }
                 str++;
             }
-            //if( changeForBus ){
-            //    qDebug() << "NEW ROUTE: " << newRoute.size();
+                if( changeCurrenti ){
+                    bus->currenti = bus->currenti + alternateRoute.size() - 2;
+                }
+                if( changeStreets ){
+                    bus->plannedStops.clear();
+                    bus->plannedStops = newStreets;
+                    bus->refactor = true;
+                    changeStreets = false;
+                }
+                bus->refactor = true;
+                bus->refactorRoute = true;
                 bus->clearRoute();
                 bus->route = newRoute;
-           // }
             actuallLink.insert( bus->getName(), newRoute );
             newRoute.clear();
-           // qDebug() << ":GA:";
         }
         i++;
     }
+}
+
+void MainWindow::deleteMarked(){
+
+    if( alternateRoute.size() != 0 ){
+        for( Street* s : alternateRoute ){
+           if(s->color == 1) s->setPen(QPen(QColor(99, 214, 104), 1.5));
+           else if(s->color == 2) s->setPen(QPen(QColor(255, 151, 77), 1.5));
+           else if(s->color == 3) s->setPen(QPen(QColor(242, 60, 50), 1.5));
+        }
+    }
+    alternateRoute.clear();
+
+    if( detour.size() != 0 ){
+        delete detour[ detour.size() - 2 ];
+        delete detour[ detour.size() - 1 ];
+    }
+    detour.clear();
 }
 
 QVector<QVector<QString>> MainWindow::getActualStops( Bus* bus ){
@@ -139,13 +177,14 @@ void MainWindow::alternateRouteFunc(){
 
             if( i != 0 ){
                 if( current->equals( street ) ){
-                    //qDebug() << "OK" << current->GetStreetID() << street->GetStreetID();
+
                 } else {
-                    //qDebug() << "nenavazuji" << current->GetStreetID() << street->GetStreetID();
-                    exit( 56 );
+                    QMessageBox msgBox;
+                    msgBox.critical( 0, "Error", "Ulice na sebe nenavazuji" );
+                    deleteMarked();
+                    return;
                 }
             }
-
             current = street;
             i++;
         }
@@ -178,8 +217,10 @@ void MainWindow::drawCross(coordinate* middle, Street* s){
         if(alternateRoute.size() == 0){
             s->setPen(QPen(QColor(180,180,180), 1.5));
 
-            scene->addLine(middle->GetX()-2,middle->GetY()-2,middle->GetX()+2,middle->GetY()+2, QPen(Qt::red, 1));
-            scene->addLine(middle->GetX()-2,middle->GetY()+2,middle->GetX()+2,middle->GetY()-2, QPen(Qt::red, 1));
+            QGraphicsLineItem* cross1 = scene->addLine(middle->GetX()-2,middle->GetY()-2,middle->GetX()+2,middle->GetY()+2, QPen(Qt::red, 1));
+            QGraphicsLineItem* cross2 = scene->addLine(middle->GetX()-2,middle->GetY()+2,middle->GetX()+2,middle->GetY()-2, QPen(Qt::red, 1));
+            detour.push_back( cross1 );
+            detour.push_back( cross2 );
         }
         else{
             s->setPen(QPen(QColor(0,170,240), 1.5));
@@ -196,7 +237,6 @@ void MainWindow::backColor(Street* s){
     QVector<Street*>::iterator i;
     for ( i = alternateRoute.begin(); i != alternateRoute.end(); ++i ){
         if((*i)->GetStreetID() == s->GetStreetID()){
-            if(!((*i)->pen().color() == QColor(180,180,180) && alternateRoute.size() > 1)){
                 i = alternateRoute.erase(i);
 
                 if(s->color == 1) s->setPen(QPen(QColor(99, 214, 104), 1.5));
@@ -204,7 +244,6 @@ void MainWindow::backColor(Street* s){
                 else if(s->color == 3) s->setPen(QPen(QColor(242, 60, 50), 1.5));
 
                 if(i == alternateRoute.end()) break;
-            }
         }
     }
 }
@@ -283,8 +322,11 @@ void MainWindow::get_time(){
     QTime time = QTime::fromString( ui->lineEdit->text(), "hh : mm : ss" );
     spawnBus();
     time = time.addSecs( 1 );
+    if( ui->lineEdit->text().right( 7 ) == "00 : 00" ){
+        timerTime = 0;
+    }
+    timerTime++;
     ui->lineEdit->setTime( time );
-    jump = ( time.msecsTo(lastTime) / 1000 ) * -1;
     lastTime = time;
     BusMovement();
 }
@@ -294,38 +336,37 @@ void MainWindow::speed( int x ){
     timer->start( 1000/x );
 }
 
-int MainWindow::convertDelay( int delay ){
-    QString minutes = QString::number( ( float ) delay / 60 );
-    QString seconds;
+int MainWindow::convertToSec( int BusDep, int delay ){
 
-    QStringList pieces = minutes.split( "." );
-
-
-    float sec;
-
-    if( pieces.size() == 2 ){
-        pieces[ 1 ] = "0." + pieces[ 1 ];
-        minutes = pieces[ 0 ];
-        seconds = pieces[ 1 ];
-        sec = seconds.toFloat() * 60;
-    } else {
-        sec = 0;
+    if( BusDep < 10 ){
+        return BusDep + delay;
     }
 
-    if( minutes.toInt() != 0 ){
-        minutes = QString::number( minutes.toInt() * 10 ) + QString::number( qRound( sec ) );
-        return minutes.toInt();
-    }
+    int sec = ( QString::number( BusDep ).right( 2 ) ).toInt();
+    int minutes = ( QString::number( BusDep ).left( QString::number( BusDep ).size() - 2 ) ).toInt();
+
+    minutes = ( minutes * 60 ) + sec;
+    delay = minutes + delay;
 
     return delay;
+}
 
-    qDebug() << minutes << delay;
+int MainWindow::convertToSec( int busDep ){
+
+    if( busDep < 10 ){
+        return busDep;
+    }
+
+    int sec = ( QString::number( busDep ).right( 2 ) ).toInt();
+    int minutes = ( QString::number( busDep ).left( QString::number( busDep ).size() - 2 ) ).toInt();
+
+    minutes = ( minutes * 60 ) + sec;
+    return minutes;
 }
 
 bool MainWindow::depart( Bus* bus ){
     QString times = ui->lineEdit->text().right( 7 );
     times = times.left( 2 ) + times.right( 2 );
-    int timerTime = times.toInt();
     QString busDepart = bus->departure;
     if( bus->departure == "" ){
         busDepart = bus->start;
@@ -336,14 +377,16 @@ bool MainWindow::depart( Bus* bus ){
     int busDep = busDepart.toUInt();
 
     int busStart = ( bus->start.left( 2 ) + bus->start.right( 2 ) ).toInt();
-    if( busStart == timerTime ){
-    bus->enRoute = true;
+
+    // qDebug() << timerTime << convertToSec( busStart ) << busStart;
+    if( convertToSec( busStart ) == timerTime ){
+        bus->enRoute = true;
     }
     if( bus->enRoute == false ){
-    return false;
+        return false;
     }
 
-    if( timerTime < busDep + convertDelay( bus->delay ) && bus->stationary ){
+    if( timerTime < convertToSec( busDep, bus->delay ) && bus->stationary ){
         return false;
     } else {
         if( bus->atEnd == false ){
@@ -363,18 +406,14 @@ void MainWindow::clearPicked(){
 }
 
 void MainWindow::BusMovement(){
-    int o = 0;
-    while( o < jump ){
-        for( int i = 0; i < busses.size(); i++ ){
-            if( i != 0 ){
-                auto* bus = busses[ i ];
-                 if( depart( bus ) && bus->enRoute ){
-                    bus->setPos( busses[ i ]->getPos() );
-                    busses[ i ]->setBus();
-                }
+    for( int i = 0; i < busses.size(); i++ ){
+        if( i != 0 ){
+            auto* bus = busses[ i ];
+            if( depart( bus ) && bus->enRoute ){
+                bus->setPos( busses[ i ]->getPos() );
+                busses[ i ]->setBus();
             }
         }
-        o++;
     }
 }
 

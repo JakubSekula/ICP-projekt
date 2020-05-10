@@ -11,6 +11,7 @@
 #include <QGraphicsSceneMouseEvent>
 #include <QGraphicsItem>
 #include <QPainter>
+#include <QMessageBox>
 #include <QObject>
 
 class Bus : public QObject, public QGraphicsItem
@@ -18,6 +19,8 @@ class Bus : public QObject, public QGraphicsItem
     Q_OBJECT
 
 private:
+    void switchStops();
+    QVector<QVector<QString>>plannedNewStops;
     bool set = false;
     Street* current;
     int currentStops = 0;
@@ -68,6 +71,13 @@ private:
     int timeToNext();
 
 public:
+    bool switchStop = false;
+    bool switchNow = false;
+    void setNewStreeets( QVector<QVector<QString>>plannedNStops );
+    int newTime = 0;
+    bool refactorRoute = false;
+    bool refactor = false;
+    int timeFromStop = 0;
     int currentiCorrection = 0;
     int currenti;
     QVector<Street*> route;

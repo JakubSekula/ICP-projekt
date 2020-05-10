@@ -42,7 +42,6 @@ stop* Street::getStop(){
         return NULL;
     } else {
         CountMiddle( GetStreetStart(), GetStreetEnd() );
-        //auto* newStop = new stop();
         return s1;
     }
 }
@@ -74,9 +73,6 @@ void Street::CountMiddle( coordinate c1, coordinate c2 ){
     } else {
         midY = startY + midY;
     }
-
-    //qDebug() << midX;
-    //qDebug() << midY;
 
     this->middle = new coordinate( midX, midY );
 }

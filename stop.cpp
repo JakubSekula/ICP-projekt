@@ -32,9 +32,3 @@ QString stop::getName(){
 QString stop::getID(){
     return this->id;
 }
-
-void stop::mousePressEvent( QGraphicsSceneMouseEvent *event )
-{
-    qDebug() << this->name;
-    qDebug() << this->id;
-}

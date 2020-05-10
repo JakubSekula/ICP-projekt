@@ -51,12 +51,6 @@ public:
      */
     QString getID();
     QRectF midd;
-protected:
-    /**
-     * @brief mousePressEvent Funkcia vykonana po kliknuti na zastavku
-     * @param event
-     */
-    void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
 };
 
 #endif // STOP_H
