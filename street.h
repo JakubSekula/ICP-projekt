@@ -30,6 +30,9 @@
 
 using namespace::std;
 
+/**
+ * @brief The Street class Informace o ulicích
+ */
 class Street : public QObject, public QGraphicsLineItem{
     Q_OBJECT
 private:
@@ -47,9 +50,9 @@ private:
     virtual void mousePressEvent(QGraphicsSceneMouseEvent* event) override;
 
 public:
-    int color;
-    bool changeable = true;
-    int delay = 0;
+    int color;//!<farba cesty
+    bool changeable = true;//!<ci je mozne menit farbu cesty
+    int delay = 0;//!<meskanie premavky
     /**
      * @brief Street::Street Konstruktor. Nastavenie cesty
      * @param id

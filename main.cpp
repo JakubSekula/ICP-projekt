@@ -8,7 +8,7 @@
  ******************************************************************************/
 
 /**
- * @file mainw.cpp
+ * @file main.cpp
  * @author Jakub Sekula (xsekul01)
  * @author Ondrej Potúček (xpotuc06)
  * @date 10.05.2020
@@ -29,6 +29,12 @@
 #include <QApplication>
 #include <QVector>
 
+/**
+ * @brief qMain Zaciatocna funkcia
+ * @param argc Pocet parametrov
+ * @param argv Parametre
+ * @return Navratova hodnota
+ */
 int main(int argc, char *argv[])
 {
 

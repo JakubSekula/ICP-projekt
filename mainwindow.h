@@ -43,6 +43,9 @@ QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
 
+/**
+ * @brief The MainWindow class Hlavní grafické zobrazení
+ */
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -147,8 +150,8 @@ public:
     /**
      * @brief MainWindow::initScene Vykreslenie mapy
      * @param streets
-     * @param bussesHash
-     * @param linkHash
+     * @param busses
+     * @param lines
      */
     void initScene( QMap<QString, Street*> streets, QMap<QString, QMap<QString, Bus*>> busses, QMap<QString, line*> lines );
 
@@ -158,11 +161,11 @@ public:
     void spawnBus();
     QVector<Street*> alternateRoute; //!< Vektor ciest v obchadzke, prva cesta je uzavreta a ostatne su obchadzka
     /**
-     * @brief MainWindow::replaceRoute Zmeni trasu busu
+     * @brief replaceRoute Zmeni trasu busu
      */
     void replaceRoute();
-    Ui::MainWindow *ui;
-    MainWindow(QWidget *parent = nullptr);
+    Ui::MainWindow *ui;//!< uzivatelske rozhranie
+    MainWindow(QWidget *parent = nullptr); //!<Hlavni graficke zobrazeni
     ~MainWindow();
 
 

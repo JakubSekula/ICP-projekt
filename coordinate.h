@@ -18,7 +18,9 @@
 #ifndef COORDINATE_H
 #define COORDINATE_H
 
-
+/**
+ * @brief The coordinate class Informace o koordinátech
+ */
 class coordinate
 {
 public:

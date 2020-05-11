@@ -25,6 +25,9 @@
 #include <QPainter>
 #include <QGraphicsItem>
 
+/**
+ * @brief The stop class Informace o zastávkách
+ */
 class stop : public QGraphicsItem
 {
 
@@ -67,7 +70,6 @@ public:
      * @return Vrati ID zastavky
      */
     QString getID();
-    QRectF midd;
 };
 
 #endif // STOP_H

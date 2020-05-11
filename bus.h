@@ -32,6 +32,9 @@
 #include <QMessageBox>
 #include <QObject>
 
+/**
+ * @brief The Bus class Informace o autobusech
+ */
 class Bus : public QObject, public QGraphicsItem
 {
     Q_OBJECT
@@ -91,23 +94,22 @@ private:
     int timeToNext();
 
 public:
-    bool switchStop = false; // jestlize se ma prepsat seznam zastavek na zastavce pro objizdku
-    bool switchNow = false; // jestli se ma zmenit nyni
+    bool switchStop = false; //!< jestlize se ma prepsat seznam zastavek na zastavce pro objizdku
+    bool switchNow = false; //!< jestli se ma zmenit nyni
     /**
      * @brief Bus::setNewStreeets nastavuje novou cestu pro autobus
      * @param plannedNStops vektor vektoru s informacemi o ceste
      */
     void setNewStreeets( QVector<QVector<QString>>plannedNStops );
-    int newTime = 0;    // cas
-    bool refactorRoute = false; // prepocet delky cesty
-    bool refactor = false; // prepocet zastavek
-    int timeFromStop = 0; // uplnynuly cas od zastavek
-    int currentiCorrection = 0; //
-    int currenti;   // index soucasne ulice
-    QVector<Street*> route; // cesta
+    int newTime = 0;    //!< cas
+    bool refactorRoute = false; //!< prepocet delky cesty
+    bool refactor = false; //!< prepocet zastavek
+    int timeFromStop = 0; //!< uplnynuly cas od zastavek
+    int currentiCorrection = 0; //!<Vypocet trasy pri obchadkze
+    int currenti;   //!< index soucasne ulice
+    QVector<Street*> route; //!< cesta
     /**
      * @brief Bus::clearRoute vycisti vektor cest
-     * @param plannedNStops vektor vektoru s informacemi o ceste
      */
     void clearRoute();
     int delay = 0;  //!< zpozdeni

@@ -32,17 +32,37 @@
 #include <QVector>
 #include <QDebug>
 
-
+/**
+ * @brief The readcsv class Načítání csv souborů
+ */
 class readcsv
 {
 public:
+    /**
+     * @brief readcsv Konstruktor
+     * @param filecsv Nazov suboru
+     * @param FileType Typ suboru, ci ide o mapu, autobusy alebo spoj
+     * @param hashStreet
+     * @param lines
+     */
     readcsv( QString filecsv, QString FileType, QMap<QString, Street*> hashStreet, QMap<QString, line*> lines );
-    QVector<QVector<int>> GetArrayOfCords( QMap<QString,Street*> makearray );
+    /**
+     * @brief GetMapHash Funkcia vrati HashMap ciest
+     * @return HashMap ciest
+     */
     QMap<QString,Street*> GetMapHash();
+    /**
+     * @brief GetBusHash Funkcia vrati HashMap autobusov
+     * @return HashMap autobusov
+     */
     QMap<QString, QMap<QString, Bus*>> GetBusHash();
+    /**
+     * @brief GetLineHash Funkcia vrati HashMap liniek
+     * @return HashMap liniek
+     */
     QMap<QString, line*> GetLineHash();
-    QMap<QString, QMap<QString, Bus*>> Busses;
-    QVector<QVector<QString>>stopTimes;
+    QMap<QString, QMap<QString, Bus*>> Busses;  //!<autobusy
+    QVector<QVector<QString>>stopTimes;//!<casy zastavnia autobusov
 
     /**
      * @brief readcsv::LoadMap precitanie .csv suboru a nacitanie hodnot
@@ -51,8 +71,10 @@ public:
     void LoadMap( QString filecsv );
 
     /**
-     * @brief readcsv::LoadBus precitanie .csv suboru a nacitanie hodnot
+     * @brief LoadBus Precitanie .csv suboru a nacitanie hodnot
      * @param filecsv .csv subor na citanie
+     * @param hashStreet
+     * @param lines
      */
     void LoadBus( QString filecsv, QMap<QString, Street*> hashStreet, QMap<QString, line*> lines );
 

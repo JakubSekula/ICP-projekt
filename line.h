@@ -23,11 +23,14 @@
 #include <QDebug>
 #include <QVector>
 
+/**
+ * @brief The line class Informace o lince
+ */
 class line
 {
 
 public:
-    QString id;
+    QString id;//!<id linky
     QString reps; //!< kolik busu se ma zobrazit v prubehu hodiny
     QMap<QString,QVector<QVector<QString>>> stoptimes; //!< doby zastavek
     QVector<QVector<QString>>stoptime; //!< cas zastaveni

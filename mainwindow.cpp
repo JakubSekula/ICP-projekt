@@ -73,7 +73,7 @@ void MainWindow::resetBtnChecked(){
 
 void MainWindow::replaceRoute(){
     int i = 0;
-    bool changeForBus = false;
+    //bool changeForBus = false;
     bool changeCurrenti = false;
     bool changeStreets = false;
     QMessageBox msgBox;
@@ -89,7 +89,7 @@ void MainWindow::replaceRoute(){
     QVector<QVector<QString>> newStreets;
 
     for( Bus* bus : busses ){
-        changeForBus = false;
+        //changeForBus = false;
         changeStreets = false;
         changeCurrenti = false;
         if( i != 0 ){
@@ -104,7 +104,7 @@ void MainWindow::replaceRoute(){
                     }
                     bus->clearRoute();
                     if( str < bus->currenti ){
-                        changeForBus = true;
+                        //changeForBus = true;
                         changeCurrenti = true;
                     }
                     for( int i = 0; i < bus->plannedStops.size(); i++ ){
@@ -129,7 +129,7 @@ void MainWindow::replaceRoute(){
                     int replacement = 0;
                     for( Street* streetReplace : alternateRoute ){
                         if( replacement != 0 ){
-                            changeForBus = true;
+                            //changeForBus = true;
 
                             bus->delay = bus->delay + 5;
                             dly += 5;

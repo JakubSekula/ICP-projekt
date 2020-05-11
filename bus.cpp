@@ -34,6 +34,7 @@ Bus::Bus(){
     getBus();
 }
 
+//vrati ulice cez ktore autobus prechadza
 void Bus::getStreets( QMap<QString, Street*> str ){
     this->streets = str;
 }
@@ -350,14 +351,17 @@ void Bus::nextPos(){
     }
 }
 
+//vratenie id autobusu
 QString Bus::getId(){
     return this->id;
 }
 
+//vratenie mena autobusu
 QString Bus::getName(){
     return this->name;
 }
 
+//zisti a vrati stred
 QPointF Bus::getMiddle(){
     QPointF ret;
     ret.rx() = current->GetMiddle()->GetX() - 2.5;
@@ -375,10 +379,12 @@ QString Bus::getStart(){
     return this->start;
 }
 
+//po kliknuti na autobus
 void Bus::mousePressEvent( QGraphicsSceneMouseEvent* event )
 {
     emit valueChangedd( plannedStops, now, route, stationary );
 }
+
 
 void Bus::getStops(){
 
@@ -406,6 +412,7 @@ void Bus::switchStops(){
     switchStop = false;
 }
 
+//vypocitanie dlzky cesty
 float Bus::countStreetLenght( Street *street ){
     float sx = street->GetStreetStart().GetX();
     float sy = street->GetStreetStart().GetY();
