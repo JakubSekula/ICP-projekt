@@ -35,6 +35,7 @@ stop::stop(){
 
 }
 
+//zakladne nastavenie hodnot
 void stop::initialize( QString identif, QString name )
 {
     this->id = identif;
@@ -42,10 +43,12 @@ void stop::initialize( QString identif, QString name )
     return;
 }
 
+//vratenie mena zastavky
 QString stop::getName(){
     return this->name;
 }
 
+//vrati id zastavky
 QString stop::getID(){
     return this->id;
 }

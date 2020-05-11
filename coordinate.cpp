@@ -17,15 +17,18 @@
 
 #include "coordinate.h"
 
+//Konstruktor, nastavenie suradnic
 coordinate::coordinate( float x, float y ){
     this->x = x;
     this->y = y;
 }
 
+//Vratenie suradnice X
 float coordinate::GetX(){
     return this->x;
 }
 
+//Vratenie suradnice Y
 float coordinate::GetY(){
     return this->y;
 }

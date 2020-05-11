@@ -120,29 +120,37 @@ bool Street::WhichWay( Street* street1, Street* street2 ){
     }
 }
 
+//pri kliknuti na cestu
 void Street::mousePressEvent( QGraphicsSceneMouseEvent* event ){
-
+    //ziskanie aktualnej farby cesty
     QColor col = this->pen().color();
+
+    //ak sa kliklo lavym tlacidlom mysi a je mozna zmena farby
     if(event->button() & Qt::LeftButton  && changeable){
 
+        //zmena na oranzovu
         if(col == QColor(99, 214, 104)){
            this->setPen(QPen(QColor(255, 151, 77), 1.5));
             this->color = 2;
         }
+        //zmena na cervenu
         else if(col == QColor(255, 151, 77)){
             this->setPen(QPen(QColor(242, 60, 50), 1.5));
             this->color = 3;
         }
+        //zmena na zelenu
         else if(col == QColor(242, 60, 50)){
             this->setPen(QPen(QColor(99, 214, 104), 1.5));
             this->color = 1;
         }
     }
+    //pri kliknuti inym tlacidlom mysi
     else if (changeable){
         if(col == QColor(0,170,240)){
            emit setBackColor(this);
         }
         else{
+            //uzatvorenie cesty
             CountMiddle(GetStreetStart(), GetStreetEnd());
             emit isBlack(GetMiddle(), this);
         }

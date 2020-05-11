@@ -21,10 +21,12 @@ line::line(){
 
 }
 
+//nastavenie id
 void line::setId( QString identif ){
     this->id = identif;
 }
 
+//nastavenie opakovani
 void line::setReps( QString repeats ){
     this->reps = repeats;
 }

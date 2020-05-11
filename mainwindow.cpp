@@ -49,10 +49,12 @@ void MainWindow::mousePressEvent(QMouseEvent *event)
     ui->graphicsView_2->setScene(new QGraphicsScene( ui->graphicsView_2 ));
 }
 
+//tlacidlo reset
 void MainWindow::resetBtnChecked(){
 
     actuallLink.clear();
     actuallStops.clear();
+    //reset mapy
     QMap<QString, Street*> phony;
     QMap<QString, line*> phonyl;
     auto org = ui->graphicsView->transform();
@@ -63,17 +65,24 @@ void MainWindow::resetBtnChecked(){
     auto* bus = new readcsv( "Bus.csv", "Bus", streets, lines );
     QMap<QString, QMap<QString, Bus*>> busses = bus->GetBusHash();
     initScene( streets, busses, lines );
+    //reset casu
     QTime time = QTime::fromString( "12:00:00" );
     ui->lineEdit->setTime( time );
+    //reset priblizenia
     ui->graphicsView->setTransform(org);
+    //reset zrychlenia
     ui->speeder->setValue(1);
+    //vycistenie spodnej casti
     ui->graphicsView_2->setScene(new QGraphicsScene( ui->graphicsView_2 ));
     ui->verticalSlider->setValue(15);
+    //reset tlacidla na nastavenie obchadzky
+    ui->linkButton->setText("Zmena trasy");
+    changingLink = false;
+    alternateRoute.clear();
 }
 
 void MainWindow::replaceRoute(){
     int i = 0;
-    //bool changeForBus = false;
     bool changeCurrenti = false;
     bool changeStreets = false;
     QMessageBox msgBox;
@@ -89,7 +98,6 @@ void MainWindow::replaceRoute(){
     QVector<QVector<QString>> newStreets;
 
     for( Bus* bus : busses ){
-        //changeForBus = false;
         changeStreets = false;
         changeCurrenti = false;
         if( i != 0 ){
@@ -104,7 +112,6 @@ void MainWindow::replaceRoute(){
                     }
                     bus->clearRoute();
                     if( str < bus->currenti ){
-                        //changeForBus = true;
                         changeCurrenti = true;
                     }
                     for( int i = 0; i < bus->plannedStops.size(); i++ ){
@@ -129,7 +136,6 @@ void MainWindow::replaceRoute(){
                     int replacement = 0;
                     for( Street* streetReplace : alternateRoute ){
                         if( replacement != 0 ){
-                            //changeForBus = true;
 
                             bus->delay = bus->delay + 5;
                             dly += 5;
@@ -165,9 +171,10 @@ void MainWindow::replaceRoute(){
 }
 
 void MainWindow::deleteMarked(){
-
+    //zmazanie obchadzky
     if( alternateRoute.size() != 0 ){
         for( Street* s : alternateRoute ){
+            //zmena farby cesty na povodnu
            if(s->color == 1) s->setPen(QPen(QColor(99, 214, 104), 1.5));
            else if(s->color == 2) s->setPen(QPen(QColor(255, 151, 77), 1.5));
            else if(s->color == 3) s->setPen(QPen(QColor(242, 60, 50), 1.5));
@@ -267,6 +274,7 @@ void MainWindow::drawCross(coordinate* middle, Street* s){
     }
 }
 
+//nastavenie farby cesty spat na povodnu
 void MainWindow::backColor(Street* s){
 
     QVector<Street*>::iterator i;
